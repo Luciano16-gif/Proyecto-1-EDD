@@ -77,6 +77,51 @@ public class Lista<T> {
         }
     }
     
+//metodo de la clase Lista para eliminar y devolver como variable
+
+    public void pop(int position){
+        Nodo pointer = head;
+        if(position == 0){
+            head = head.getNext();
+            size--;
+        }
+        else if(position == len()-1){
+            for(int x = 2; x < len(); x++){
+                pointer = pointer.getNext();
+            }
+            pointer.setNext(null);
+            tail = pointer;
+            size--;
+        }
+        else{
+            for(int x = 0; x < position-1; x++){
+                pointer = pointer.getNext();
+            }
+            pointer.setNext(pointer.getNext().getNext());
+            size--;
+        }
+    }
+//funcion de la clase Lista para buscar
+
+    public int find(T data){
+        if(head.getData() == data){
+            return 0;
+        }
+        else if(tail.getData() == data){
+            return size-1;
+        }
+        else{
+            Nodo pointer = head;
+            for(int x = 0; x < len(); x++){
+                if(pointer.getData() == data){
+                    return x;
+                }
+                pointer = pointer.getNext();
+            }
+        }
+        return 0;
+    } 
+    
 //metodo de la clase Lista para pre agregar
 
     public void preappend(T data){
@@ -138,51 +183,7 @@ public class Lista<T> {
                 }
             }
         }
-    }
-//metodo de la clase Lista para eliminar y devolver como variable
-
-    public void pop(int position){
-        Nodo pointer = head;
-        if(position == 0){
-            head = head.getNext();
-            size--;
-        }
-        else if(position == len()-1){
-            for(int x = 2; x < len(); x++){
-                pointer = pointer.getNext();
-            }
-            pointer.setNext(null);
-            tail = pointer;
-            size--;
-        }
-        else{
-            for(int x = 0; x < position-1; x++){
-                pointer = pointer.getNext();
-            }
-            pointer.setNext(pointer.getNext().getNext());
-            size--;
-        }
-    }
-//funcion de la clase Lista para buscar
-
-    public int find(T data){
-        if(head.getData() == data){
-            return 0;
-        }
-        else if(tail.getData() == data){
-            return size-1;
-        }
-        else{
-            Nodo pointer = head;
-            for(int x = 0; x < len(); x++){
-                if(pointer.getData() == data){
-                    return x;
-                }
-                pointer = pointer.getNext();
-            }
-        }
-        return 0;
-    }    
+    }   
 
 //metodo de la clase Lista para reemplazar informacion
 
