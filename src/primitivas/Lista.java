@@ -1,4 +1,3 @@
-
 package primitivas;
 
 public class Lista<T> {
