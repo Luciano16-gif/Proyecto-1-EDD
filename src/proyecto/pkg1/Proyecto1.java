@@ -11,8 +11,8 @@ import Objetos.Funcion;
 public class Proyecto1 {
 
     public static void main(String[] args) {
-        Funcion.ReadJsonMetroCaracas("https://drive.google.com/uc?export=download&id=1rX-A17wDXpYW9uyU-JaJMIkzHx4Y9n9y");
-        Funcion.ReadJsonMetroBogota("https://drive.google.com/uc?export=download&id=16Pb65nsY-Tchpf-OgqMhLBZnYV8F6auT");
+        Funcion.ReadJsonMetro("https://drive.google.com/uc?export=download&id=1rX-A17wDXpYW9uyU-JaJMIkzHx4Y9n9y");
+        Funcion.ReadJsonMetro("https://drive.google.com/uc?export=download&id=16Pb65nsY-Tchpf-OgqMhLBZnYV8F6auT");
     }
 
     
