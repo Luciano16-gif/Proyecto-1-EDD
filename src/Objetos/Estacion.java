@@ -13,19 +13,11 @@ package Objetos;
 
 
 public class Estacion {
-    private String nombre;
-    private String linea;
-    private String sistema;
-    private String color;
-    
-
-    public Estacion(String nombre, String linea, String sistema, int lineaIndex) {
         this.nombre = nombre;
         this.linea = linea;
         this.sistema = sistema;
         this.color = asignarColor(lineaIndex); // Asignar color basado en el índice de la línea
     }
-
     public String getNombre() {
         return nombre;
     }
@@ -58,14 +50,6 @@ public class Estacion {
             default: return "black"; 
         }
     }
-
-    @Override
-    public String toString() {
-        return "Estacion{" +
-        "nombre='" + nombre + '\'' +
-        ", linea='" + linea + '\'' +
-        ", sistema='" + sistema + '\'';
-        }
     
     
 }
