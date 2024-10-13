@@ -2,6 +2,17 @@ package primitivas;
 
 import java.util.HashMap;
 
+/**
+
+ * Esta clase define el objeto Grafo, con la cual tiene diferentes atributos y funciones que lo definen
+
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 13/10/2024
+
+ */
+
+
 public class Grafo<T> {
     private final HashMap<T, Nodo<T>> nodos;
 

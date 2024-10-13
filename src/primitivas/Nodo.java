@@ -1,6 +1,16 @@
 
 package primitivas;
 
+/**
+
+ * Esta clase define el objeto Nodo, con la cual tiene diferentes atributos y funciones que lo definen
+
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 13/10/2024
+
+ */
+
 public class Nodo<T> {
     
     private Nodo next;
