@@ -8,7 +8,7 @@ import primitivas.Lista;
 import org.json.JSONObject;
 
 /**
- * Esta clase define las funciones referentes al JSON.
+ * Esta clase define las funciones referentes al JSON. 
  * 
  * @author Gabriele Colarusso, Luciano Minardo, Ricardo Paez
  * 
