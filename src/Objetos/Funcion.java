@@ -6,11 +6,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import primitivas.Lista;
 import org.json.JSONObject;
-import java.util.Iterator;
 
 /**
  * Esta clase define las funciones referentes al JSON.
- * @author
+ * 
+ * @author Gabriele Colarusso, Luciano Minardo, Ricardo Paez
+ * 
  * @version: 13/10/2024
  */
 public class Funcion {
@@ -51,8 +52,8 @@ public class Funcion {
 
             // Leer el contenido
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder content = new StringBuilder();
             String inputLine;
-            StringBuilder content = new StringBuilder(); // Usar StringBuilder en lugar de StringBuffer
             while ((inputLine = in.readLine()) != null) {
                 content.append(inputLine);
             }
@@ -62,27 +63,43 @@ public class Funcion {
             // Convertir el contenido en un objeto JSON
             JSONObject jsonObject = new JSONObject(content.toString());
 
-            // Procesar el JSON para cualquier sistema de transporte
-            Iterator<String> sistemas = jsonObject.keys();
-            while (sistemas.hasNext()) {
-                String sistema = sistemas.next();
-                JSONObject sistemaObj = jsonObject.getJSONObject(sistema);
-                Iterator<String> lineas = sistemaObj.keys();
-                while (lineas.hasNext()) {
-                    String linea = lineas.next();
-                    JSONObject lineaObj = sistemaObj.getJSONObject(linea);
-                    Iterator<String> estacionesKeys = lineaObj.keys();
-                    while (estacionesKeys.hasNext()) {
-                        String estacionNombre = estacionesKeys.next();
-                        estaciones.append(new Estacion(estacionNombre, linea, sistema));
-                    }
-                }
-            }
+            // Llamar a la función para extraer estaciones
+            extractEstaciones(jsonObject, estaciones);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return estaciones;
+    }
+
+    private static void extractEstaciones(JSONObject jsonObject, Lista<Estacion> estaciones) {
+        int lineaIndex = 0;
+
+        for (String sistema : jsonObject.keySet()) {
+            Object sistemaObj = jsonObject.get(sistema);
+
+            if (sistemaObj instanceof Iterable) {
+                for (Object lineaObj : (Iterable<?>) sistemaObj) {
+                    JSONObject lineaJson = (JSONObject) lineaObj;
+                    for (String linea : lineaJson.keySet()) {
+                        Object estacionesObj = lineaJson.get(linea);
+                        if (estacionesObj instanceof Iterable) {
+                            for (Object estacion : (Iterable<?>) estacionesObj) {
+                                if (estacion instanceof String) {
+                                    estaciones.append(new Estacion((String) estacion, linea, sistema, lineaIndex));
+                                } else if (estacion instanceof JSONObject) {
+                                    JSONObject estacionJson = (JSONObject) estacion;
+                                    for (String nombre : estacionJson.keySet()) {
+                                        estaciones.append(new Estacion(nombre, linea, sistema, lineaIndex));
+                                    }
+                                }
+                            }
+                        }
+                        lineaIndex++; // Incrementar el índice para la siguiente línea
+                    }
+                }
+            }
+        }
     }
 }
