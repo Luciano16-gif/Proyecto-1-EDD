@@ -13,16 +13,30 @@ package Objetos;
 
 
 public class Estacion {
-    private String nombre;
-    private String linea;
-    private String sistema;
-    //Campos de la clase
-    //constructor
+    String nombre;
+    String linea;
+    String sistema;
+    private String color;
+
     public Estacion(String nombre, String linea, String sistema) {
         this.nombre = nombre;
         this.linea = linea;
         this.sistema = sistema;
     }
+    
+    //no se que hace esto 
+    //Estacion(String string, String linea, String sistema) {
+    //    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    //}
+
+    @Override
+    public String toString() {
+        return "Estacion{" +
+        "nombre='" + nombre + '\'' +
+        ", linea='" + linea + '\'' +
+        ", sistema='" + sistema + '\'' +
+        ", color='" + getColor() + '\'' + '}';
+        }
     //getter para el nombre
     public String getNombre() {
         return nombre;
@@ -47,12 +61,20 @@ public class Estacion {
     public void setSistema(String sistema) {
         this.sistema = sistema;
     }
-    //metodo para imprimir los datos
-    public String toString() {
-        return "Estacion{" +
-                "nombre='" + nombre + '\'' +
-                ", linea='" + linea + '\'' +
-                ", sistema='" + sistema + '\'' +
-                '}';
+
+    /**
+     * @return the color
+     */
+    public String getColor() {
+        return color;
     }
+
+    /**
+     * @param color the color to set
+     */
+    public void setColor(String color) {
+        this.color = color;
+    }
+    
+    
 }
