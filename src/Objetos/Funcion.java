@@ -1,39 +1,39 @@
 package Objetos;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import primitivas.Lista;
 import org.json.JSONObject;
-
+import java.util.Iterator;
 
 /**
-
- * Esta clase define las funciones referentes al JSON, con la cual tiene diferentes atributos y funciones que lo definen
-
- * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
-
+ * Esta clase define las funciones referentes al JSON.
+ * @author
  * @version: 13/10/2024
-
  */
-
-
-
 public class Funcion {
-    
+
     public static void ReadJsonMetro(String args) {
         String urlString = args;
-        List<Estacion> estaciones = readJson(urlString);
+        Lista<Estacion> estaciones = readJson(urlString);
+
+        Grafos grafo = new Grafos();
 
         // Imprimir todas las estaciones
-        for (Estacion estacion : estaciones) {
+        for (int i = 0; i < estaciones.len(); i++) {
+            Estacion estacion = estaciones.get(i);
+            grafo.addEstacion(estacion);
             System.out.println(estacion);
         }
+
+        grafo.conectarEstaciones();
+        grafo.mostrarGrafo();
     }
 
-    public static List<Estacion> readJson(String urlString) {
-        List<Estacion> estaciones = new ArrayList<>();
+    public static Lista<Estacion> readJson(String urlString) {
+        Lista<Estacion> estaciones = new Lista<>();
 
         try {
             // Crear la URL y abrir la conexión
@@ -42,10 +42,17 @@ public class Funcion {
             conn.setRequestMethod("GET");
             conn.connect();
 
+            // Verificar la respuesta
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                System.out.println("Error al conectar: Código de respuesta " + responseCode);
+                return estaciones;
+            }
+
             // Leer el contenido
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine;
-            StringBuffer content = new StringBuffer();
+            StringBuilder content = new StringBuilder(); // Usar StringBuilder en lugar de StringBuffer
             while ((inputLine = in.readLine()) != null) {
                 content.append(inputLine);
             }
@@ -56,23 +63,18 @@ public class Funcion {
             JSONObject jsonObject = new JSONObject(content.toString());
 
             // Procesar el JSON para cualquier sistema de transporte
-            for (String sistema : jsonObject.keySet()) {
-                for (Object lineaObject : jsonObject.getJSONArray(sistema)) {
-                    if (lineaObject instanceof JSONObject) {
-                        JSONObject lineaJson = (JSONObject) lineaObject;
-                        for (String linea : lineaJson.keySet()) {
-                            for (Object estacionObj : lineaJson.getJSONArray(linea)) {
-                                if (estacionObj instanceof String) {
-                                    estaciones.add(new Estacion((String) estacionObj, linea, sistema));
-                                } else if (estacionObj instanceof JSONObject) {
-                                    JSONObject estacionJson = (JSONObject) estacionObj;
-                                    for (String estacionKey : estacionJson.keySet()) {
-                                        estaciones.add(new Estacion(estacionKey, linea, sistema));
-                                        estaciones.add(new Estacion(estacionJson.getString(estacionKey), linea, sistema));
-                                    }
-                                }
-                            }
-                        }
+            Iterator<String> sistemas = jsonObject.keys();
+            while (sistemas.hasNext()) {
+                String sistema = sistemas.next();
+                JSONObject sistemaObj = jsonObject.getJSONObject(sistema);
+                Iterator<String> lineas = sistemaObj.keys();
+                while (lineas.hasNext()) {
+                    String linea = lineas.next();
+                    JSONObject lineaObj = sistemaObj.getJSONObject(linea);
+                    Iterator<String> estacionesKeys = lineaObj.keys();
+                    while (estacionesKeys.hasNext()) {
+                        String estacionNombre = estacionesKeys.next();
+                        estaciones.append(new Estacion(estacionNombre, linea, sistema));
                     }
                 }
             }
@@ -83,6 +85,4 @@ public class Funcion {
 
         return estaciones;
     }
-    
-    
 }
