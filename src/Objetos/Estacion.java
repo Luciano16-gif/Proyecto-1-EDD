@@ -16,43 +16,56 @@ public class Estacion {
     private String nombre;
     private String linea;
     private String sistema;
-    //Campos de la clase
-    //constructor
-    public Estacion(String nombre, String linea, String sistema) {
+    private String color;
+    
+
+    public Estacion(String nombre, String linea, String sistema, int lineaIndex) {
         this.nombre = nombre;
         this.linea = linea;
         this.sistema = sistema;
+        this.color = asignarColor(lineaIndex); // Asignar color basado en el índice de la línea
     }
-    //getter para el nombre
+
     public String getNombre() {
         return nombre;
     }
-    //setter para el nombre
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    //getter para obtener la linea
+
     public String getLinea() {
         return linea;
     }
-    //setter para obtener la linea
-    public void setLinea(String linea) {
-        this.linea = linea;
+
+    public String getColor() {
+        return color;
     }
-    //getter para el sistema
-    public String getSistema() {
-        return sistema;
+
+    private String asignarColor(int lineaIndex) {
+        switch (lineaIndex) {
+            case 0: return "red";
+            case 1: return "blue";
+            case 2: return "green";
+            case 3: return "orange";
+            case 4: return "purple";    
+            case 5: return"cyan";      
+            case 6: return"yellow";   
+            case 7: return"magenta";   
+            case 8: return"brown";     
+            case 9: return"lime";  
+            case 10: return"teal";      
+            case 11: return"navy";      
+            case 12: return"pink";      
+            case 13: return"lightgray"; 
+            case 14: return"darkorange"; 
+            default: return "black"; 
+        }
     }
-    //setter para el sistema
-    public void setSistema(String sistema) {
-        this.sistema = sistema;
-    }
-    //metodo para imprimir los datos
+
+    @Override
     public String toString() {
         return "Estacion{" +
-                "nombre='" + nombre + '\'' +
-                ", linea='" + linea + '\'' +
-                ", sistema='" + sistema + '\'' +
-                '}';
-    }
+        "nombre='" + nombre + '\'' +
+        ", linea='" + linea + '\'' +
+        ", sistema='" + sistema + '\'';
+        }
+    
+    
 }

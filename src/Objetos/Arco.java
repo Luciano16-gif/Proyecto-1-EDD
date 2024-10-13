@@ -10,33 +10,41 @@ package Objetos;
 
  */
 public class Arco {
-    private String start;
-    private String end;
+    private int src;
+    private int dest;
     private boolean nodoestacionVisitado = false;
+    private int distancia;
     //Campos de la clase
     //constructor    
-    public Arco(String start, String end){
-        this.start = start;
-        this.end = end;
+    
+    public Arco(int src, int dest, int distancia){
+        this.src = src;
+        this.dest = dest;
+        this.distancia = distancia;
     }
+    
+    public int compareTo(Arco compareArco) {
+        return this.distancia - compareArco.distancia;
+    }
+    
     //getter para el nodo inicial del arco
-    public String getStart() {
-        return start;
+    public int getSrc() {
+        return src;
     }
     //setter para el nodo inicial
-    public void setStart(String start) {
-        this.start = start;
+    public void setSrc(int src) {
+        this.src = src;
     }
     //getter para el nodo final el arco
-    public String getEnd() {
-        return end;
+    public int getDest() {
+        return dest;
     }
     //setter para el nodo final
-    public void setEnd(String end) {
-        this.end = end;
+    public void setDest(int dest) {
+        this.dest = dest;
     }
     //metodo para visitar los nodos 
-    public void visitarNodoEstacion(String name) {
+    public void visitarNodoEstacion(int name) {
         nodoestacionVisitado = true;
     }
 }
