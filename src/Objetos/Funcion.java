@@ -7,6 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
 
+
+/**
+
+ * Esta clase define las funciones referentes al JSON, con la cual tiene diferentes atributos y funciones que lo definen
+
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 13/10/2024
+
+ */
+
+
+
 public class Funcion {
     
     public static void ReadJsonMetro(String args) {

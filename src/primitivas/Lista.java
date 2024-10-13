@@ -1,7 +1,18 @@
 package primitivas;
 
-public class Lista<T> {
+/**
 
+ * Esta clase define el objeto Lista, con la cual tiene diferentes atributos y funciones que lo definen
+
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 13/10/2024
+
+ */
+
+
+
+public class Lista<T> {
     private Nodo head;
     private Nodo tail;
     private int size;
@@ -54,7 +65,6 @@ public class Lista<T> {
     }
     
 //metodo de la clase Lista para borrar lista
-
     public void delete(){
         head = null;
         tail = null;
