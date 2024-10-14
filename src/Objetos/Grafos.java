@@ -15,27 +15,6 @@ public class Grafos {
     public Grafos() {
         arcos = new Lista<>();
         estaciones = new Lista<>();
-        inicializarColoresPredeterminados();
-    }
-
-    private void inicializarColoresPredeterminados() {
-        coloresPredeterminados = new String[] {
-            "red",       // Color para la línea 1
-            "blue",      // Color para la línea 2
-            "green",     // Color para la línea 3
-            "orange",    // Color para la línea 4
-            "purple",    // Color para la línea 5
-            "cyan",      // Color para la línea 6
-            "yellow",    // Color para la línea 7
-            "magenta",   // Color para la línea 8
-            "brown",     // Color para la línea 9
-            "lime",      // Color para la línea 10
-            "teal",      // Color para la línea 11
-            "navy",      // Color para la línea 12
-            "pink",      // Color para la línea 13
-            "lightgray", // Color para la línea 14
-            "darkorange" // Color para la línea 15
-        };
     }
 
     public void addArco(int src, int dest) {
