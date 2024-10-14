@@ -7,6 +7,13 @@ import java.net.URL;
 import primitivas.Lista;
 import org.json.JSONObject;
 
+/**
+ * Esta clase define las funciones referentes al JSON. 
+ * 
+ * @author Gabriele Colarusso, Luciano Minardo, Ricardo Paez
+ * 
+ * @version: 13/10/2024
+ */
 public class Funcion {
 
     public static void ReadJsonMetro(String args) {
@@ -56,6 +63,40 @@ public class Funcion {
             // Convertir el contenido en un objeto JSON
             JSONObject jsonObject = new JSONObject(content.toString());
 
+            // Llamar a la función para extraer estaciones
+            extractEstaciones(jsonObject, estaciones);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return estaciones;
+    }
+
+    private static void extractEstaciones(JSONObject jsonObject, Lista<Estacion> estaciones) {
+        int lineaIndex = 0;
+
+        for (String sistema : jsonObject.keySet()) {
+            Object sistemaObj = jsonObject.get(sistema);
+
+            if (sistemaObj instanceof Iterable) {
+                for (Object lineaObj : (Iterable<?>) sistemaObj) {
+                    JSONObject lineaJson = (JSONObject) lineaObj;
+                    for (String linea : lineaJson.keySet()) {
+                        Object estacionesObj = lineaJson.get(linea);
+                        if (estacionesObj instanceof Iterable) {
+                            for (Object estacion : (Iterable<?>) estacionesObj) {
+                                if (estacion instanceof String) {
+                                    estaciones.append(new Estacion((String) estacion, linea, sistema, lineaIndex));
+                                } else if (estacion instanceof JSONObject) {
+                                    JSONObject estacionJson = (JSONObject) estacion;
+                                    for (String nombre : estacionJson.keySet()) {
+                                        estaciones.append(new Estacion(nombre, linea, sistema, lineaIndex));
+                                    }
+                                }
+                            }
+                        }
+                        lineaIndex++; // Incrementar el índice para la siguiente línea
                     }
                 }
             }
