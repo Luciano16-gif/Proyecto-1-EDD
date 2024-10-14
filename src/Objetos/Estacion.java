@@ -1,71 +1,90 @@
-
 package Objetos;
 
+import java.util.Objects;
+import primitivas.Lista;
+
 /**
-
- * Esta clase define la clase estacion
-
- * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
-
- * @version: 13/10/2024
-
+ * Esta clase define la clase Estacion.
  */
-
-
 public class Estacion {
     private String nombre;
-    private String linea;
+    private Lista<String> lineas;
     private String sistema;
     private String color;
-    
 
-    public Estacion(String nombre, String linea, String sistema, int lineaIndex) {
+    public Estacion(String nombre, String linea, String sistema) {
         this.nombre = nombre;
-        this.linea = linea;
+        this.lineas = new Lista<>();
+        this.lineas.append(linea);
         this.sistema = sistema;
-        this.color = asignarColor(lineaIndex); // Asignar color basado en el índice de la línea
+        this.color = asignarColor(linea);
+    }
+
+    public void agregarLinea(String linea) {
+        if (!lineas.exist(linea)) {
+            lineas.append(linea);
+        }
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public String getLinea() {
-        return linea;
+    public Lista<String> getLineas() {
+        return lineas;
+    }
+
+    public String getSistema() {
+        return sistema;
     }
 
     public String getColor() {
         return color;
     }
 
-    private String asignarColor(int lineaIndex) {
-        switch (lineaIndex) {
-            case 0: return "red";
-            case 1: return "blue";
-            case 2: return "green";
-            case 3: return "orange";
-            case 4: return "purple";    
-            case 5: return"cyan";      
-            case 6: return"yellow";   
-            case 7: return"magenta";   
-            case 8: return"brown";     
-            case 9: return"lime";  
-            case 10: return"teal";      
-            case 11: return"navy";      
-            case 12: return"pink";      
-            case 13: return"lightgray"; 
-            case 14: return"darkorange"; 
-            default: return "black"; 
+    private String asignarColor(String linea) {
+        switch (linea) {
+            case "Linea 1": return "red";
+            case "Linea 2": return "blue";
+            case "Linea 3": return "green";
+            case "Linea 4": return "yellow";
+            // Puedes agregar más líneas y colores si es necesario
+            default: return "black";
         }
     }
 
     @Override
     public String toString() {
         return "Estacion{" +
-        "nombre='" + nombre + '\'' +
-        ", linea='" + linea + '\'' +
-        ", sistema='" + sistema + '\'';
+               "nombre='" + nombre + '\'' +
+               ", lineas=" + lineasToString() +
+               ", sistema='" + sistema + '\'' +
+               ", color='" + color + '\'' +
+               '}';
+    }
+
+    private String lineasToString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lineas.len(); i++) {
+            sb.append(lineas.get(i));
+            if (i < lineas.len() - 1) {
+                sb.append(", ");
+            }
         }
-    
-    
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Estacion)) return false;
+        Estacion estacion = (Estacion) obj;
+        return nombre.equals(estacion.nombre) &&
+               sistema.equals(estacion.sistema);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, sistema);
+    }
 }
