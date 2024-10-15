@@ -7,6 +7,11 @@ import primitivas.Lista;
 
 /**
  * Esta clase define la clase Estacion.
+ * 
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 15/10/2024
+ * 
  */
 public class Estacion {
     private String nombre;

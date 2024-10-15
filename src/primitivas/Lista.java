@@ -6,7 +6,7 @@ package primitivas;
 
  * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
 
- * @version: 13/10/2024
+ * @version: 15/10/2024
 
  */
 

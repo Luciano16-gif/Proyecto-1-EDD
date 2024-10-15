@@ -6,6 +6,11 @@ import primitivas.Lista;
 
 /**
  * Clase para manejar grafos de estaciones y arcos.
+ * 
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 15/10/2024
+ * 
  */
 
 public class Grafos {

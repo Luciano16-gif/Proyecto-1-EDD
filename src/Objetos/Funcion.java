@@ -8,6 +8,11 @@ import primitivas.Lista;
 
 /**
  * Esta clase define las funciones referentes al JSON.
+ * 
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 15/10/2024
+ * 
  */
 public class Funcion {
 
