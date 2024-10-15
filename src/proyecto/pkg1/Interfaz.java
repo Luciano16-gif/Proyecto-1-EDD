@@ -7,9 +7,15 @@ package proyecto.pkg1;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author ricar
+
+ * Esta clase define la clase Interfaz, donde la cual se puede ver la construccion de la interfaz
+  
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 15/10/2024
+
  */
+
 public class Interfaz extends javax.swing.JFrame {
 
     /**

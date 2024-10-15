@@ -1,6 +1,8 @@
 package Objetos;
 
 import java.util.Objects;
+import java.util.Map;
+import java.util.HashMap;
 import primitivas.Lista;
 
 /**
@@ -11,6 +13,16 @@ public class Estacion {
     private Lista<String> lineas;
     private String sistema;
     private String color;
+
+    // Mapa estático de líneas a colores
+    private static Map<String, String> lineaColorMap = new HashMap<>();
+    private static int colorIndex = 0;
+
+    // Lista de colores disponibles
+    private static final String[] COLORES_DISPONIBLES = {
+        "red", "blue", "green", "yellow", "orange", "purple", "cyan", "magenta",
+        "brown", "lime", "teal", "navy", "pink", "gray", "darkorange", "olive", "maroon"
+    };
 
     public Estacion(String nombre, String linea, String sistema) {
         this.nombre = nombre;
@@ -23,6 +35,8 @@ public class Estacion {
     public void agregarLinea(String linea) {
         if (!lineas.exist(linea)) {
             lineas.append(linea);
+            // Actualizar el color si es necesario (opcional)
+            // this.color = asignarColor(linea);
         }
     }
 
@@ -43,13 +57,20 @@ public class Estacion {
     }
 
     private String asignarColor(String linea) {
-        switch (linea) {
-            case "Linea 1": return "red";
-            case "Linea 2": return "blue";
-            case "Linea 3": return "green";
-            case "Linea 4": return "yellow";
-            // Puedes agregar más líneas y colores si es necesario
-            default: return "black";
+        // Verificar si la línea ya tiene un color asignado
+        if (lineaColorMap.containsKey(linea)) {
+            return lineaColorMap.get(linea);
+        } else {
+            // Asignar el siguiente color disponible
+            if (colorIndex < COLORES_DISPONIBLES.length) {
+                String colorAsignado = COLORES_DISPONIBLES[colorIndex];
+                lineaColorMap.put(linea, colorAsignado);
+                colorIndex++;
+                return colorAsignado;
+            } else {
+                // Si se agotan los colores, usar 'black' o algún color por defecto
+                return "black";
+            }
         }
     }
 
