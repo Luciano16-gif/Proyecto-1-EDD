@@ -1,50 +1,62 @@
+package Objetos;
 
-package Objetos;  
 /**
-
- * Esta clase define el objeto Grafo, con la cual tiene diferentes atributos y funciones que lo definen
-
- * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
-
- * @version: 13/10/2024
-
+ * Esta clase define el objeto Arco, con diferentes atributos y funciones.
  */
-public class Arco {
+public class Arco implements Comparable<Arco> {
     private int src;
     private int dest;
-    private boolean nodoestacionVisitado = false;
+    private boolean nodoEstacionVisitado = false;
     private int distancia;
-    //Campos de la clase
-    //constructor    
-    
-    public Arco(int src, int dest, int distancia){
+
+    public Arco(int src, int dest, int distancia) {
+        if (src < 0 || dest < 0) {
+            throw new IllegalArgumentException("Los nodos no pueden tener valores negativos.");
+        }
+        if (distancia < 0) {
+            throw new IllegalArgumentException("La distancia no puede ser negativa.");
+        }
         this.src = src;
         this.dest = dest;
         this.distancia = distancia;
     }
-    
+
+    @Override
     public int compareTo(Arco compareArco) {
-        return this.distancia - compareArco.distancia;
+        return Integer.compare(this.distancia, compareArco.distancia);
     }
-    
-    //getter para el nodo inicial del arco
+
     public int getSrc() {
         return src;
     }
-    //setter para el nodo inicial
+
     public void setSrc(int src) {
         this.src = src;
     }
-    //getter para el nodo final el arco
+
     public int getDest() {
         return dest;
     }
-    //setter para el nodo final
+
     public void setDest(int dest) {
         this.dest = dest;
     }
-    //metodo para visitar los nodos 
-    public void visitarNodoEstacion(int name) {
-        nodoestacionVisitado = true;
+
+    public void marcarComoVisitado() {
+        this.nodoEstacionVisitado = true;
+    }
+
+    public boolean isNodoEstacionVisitado() {
+        return nodoEstacionVisitado;
+    }
+
+    @Override
+    public String toString() {
+        return "Arco{" +
+               "src=" + src +
+               ", dest=" + dest +
+               ", distancia=" + distancia +
+               ", visitado=" + nodoEstacionVisitado +
+               '}';
     }
 }
