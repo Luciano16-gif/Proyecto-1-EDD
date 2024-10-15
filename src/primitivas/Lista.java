@@ -244,5 +244,17 @@ public class Lista<T> {
         return false;
     }
     
+    public int indexOf(T data) {
+        Nodo<T> pointer = head;
+        int index = 0;
+        while (pointer != null) {
+            if (pointer.getData().equals(data)) {
+                return index;
+            }
+            pointer = pointer.getNext();
+            index++;
+        }
+        return -1; // No encontrado
+    }
     
 }
