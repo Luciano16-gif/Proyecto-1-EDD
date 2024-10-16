@@ -107,7 +107,28 @@ public class InterfazFinal extends javax.swing.JFrame {
         }
     }
 
+    private boolean todasEstacionesCubiertas() {
+    boolean[] visitadas = new boolean[estaciones.len()]; // Inicializamos todas las estaciones como no visitadas
 
+    // Recorremos cada estación como posible sucursal
+    for (int i = 0; i < estaciones.len(); i++) {
+        Estacion estacion = estaciones.get(i); // Tomamos cada estación como punto inicial
+        Lista<Integer> cobertura = calcularCobertura(estacion, t, "BFS");
+
+        // Marcamos las estaciones cubiertas por esta sucursal
+        for (int j = 0; j < cobertura.len(); j++) {
+            visitadas[cobertura.get(j)] = true;
+        }
+    }
+
+    // Comprobamos si todas las estaciones fueron visitadas al menos una vez
+    for (boolean visitada : visitadas) {
+        if (!visitada) { // Si alguna estación no fue visitada, retornamos false
+            return false;
+        }
+    }
+    return true; // Si todas las estaciones fueron cubiertas, retornamos true
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -127,56 +148,96 @@ public class InterfazFinal extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         botonVerificarSurcusal = new javax.swing.JButton();
         verificarsurcusal = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        BotonVerificarCobertura = new javax.swing.JButton();
 
         jTextField1.setText("jTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        botonCargarJson.setBackground(new java.awt.Color(204, 255, 255));
+        botonCargarJson.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         botonCargarJson.setText("Cargar JSON");
         botonCargarJson.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botonCargarJsonActionPerformed(evt);
             }
         });
-        getContentPane().add(botonCargarJson, new org.netbeans.lib.awtextra.AbsoluteConstraints(25, 27, 150, 70));
+        getContentPane().add(botonCargarJson, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 150, 60));
 
+        botonEstablecerT.setBackground(new java.awt.Color(204, 255, 255));
+        botonEstablecerT.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         botonEstablecerT.setText("Establecer T");
         botonEstablecerT.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botonEstablecerTActionPerformed(evt);
             }
         });
-        getContentPane().add(botonEstablecerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 150, 70));
-        getContentPane().add(obtenerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 140, 130, -1));
+        getContentPane().add(botonEstablecerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 210, 130, 40));
+        getContentPane().add(obtenerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 180, 170, -1));
 
+        dfs.setBackground(new java.awt.Color(204, 255, 255));
+        dfs.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         dfs.setText("DFS");
         dfs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dfsActionPerformed(evt);
             }
         });
-        getContentPane().add(dfs, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 260, 100, 50));
+        getContentPane().add(dfs, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 310, 100, 50));
 
+        bfs.setBackground(new java.awt.Color(204, 255, 255));
+        bfs.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         bfs.setText("BFS");
         bfs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bfsActionPerformed(evt);
             }
         });
-        getContentPane().add(bfs, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 330, 100, 50));
+        getContentPane().add(bfs, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 310, 100, 50));
 
-        jLabel1.setText("Tipo de Busqueda");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 290, 130, 50));
+        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel1.setText("Seleccione el algoritmo deseado para colocar ");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 260, 310, 20));
 
-        botonVerificarSurcusal.setText("Ver Surcusal");
+        botonVerificarSurcusal.setBackground(new java.awt.Color(204, 255, 255));
+        botonVerificarSurcusal.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
+        botonVerificarSurcusal.setText("Verificar existencia de la estacion");
         botonVerificarSurcusal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botonVerificarSurcusalActionPerformed(evt);
             }
         });
-        getContentPane().add(botonVerificarSurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 100, 180, 50));
-        getContentPane().add(verificarsurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 160, 260, 40));
+        getContentPane().add(botonVerificarSurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 200, 290, 50));
+        getContentPane().add(verificarsurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 160, 350, 30));
+
+        jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel2.setText("Introduzca el numero de T con el cual ");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 250, 20));
+
+        jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel3.setText("desea implementar las sucursales");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 220, -1));
+
+        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel4.setText("Escriba el nombre de la estacion para verificar su existencia");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 130, -1, -1));
+
+        jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
+        jLabel5.setText("y ver la cobertura de la sucursal.");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 280, -1, -1));
+
+        BotonVerificarCobertura.setText("Verificar Cobertura Completa");
+        BotonVerificarCobertura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonVerificarCoberturaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonVerificarCobertura, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 40, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -246,6 +307,14 @@ public class InterfazFinal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_botonVerificarSurcusalActionPerformed
 
+    private void BotonVerificarCoberturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonVerificarCoberturaActionPerformed
+        if (todasEstacionesCubiertas()) {
+        JOptionPane.showMessageDialog(this, "Todas las estaciones están cubiertas por una sucursal.");
+    } else {
+        JOptionPane.showMessageDialog(this, "No todas las estaciones están cubiertas.");
+    }
+    }//GEN-LAST:event_BotonVerificarCoberturaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -282,12 +351,17 @@ public class InterfazFinal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BotonVerificarCobertura;
     private javax.swing.JButton bfs;
     private javax.swing.JButton botonCargarJson;
     private javax.swing.JButton botonEstablecerT;
     private javax.swing.JButton botonVerificarSurcusal;
     private javax.swing.JButton dfs;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField obtenerT;
     private javax.swing.JTextField verificarsurcusal;
