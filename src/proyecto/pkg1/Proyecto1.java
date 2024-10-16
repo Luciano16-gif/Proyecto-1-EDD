@@ -15,7 +15,7 @@ package proyecto.pkg1;
 public class Proyecto1 {
     public static void main(String[] args) {
         // Crear la ventana de la interfaz donde se va a visualizar la interfaz
-        Interfaz window = new Interfaz();
+        InterfazFinal window = new InterfazFinal();
         window.setVisible(true);   
     }
 }

@@ -1,17 +1,13 @@
 package Objetos;
 
-import java.util.Objects;
-import java.util.Map;
-import java.util.HashMap;
 import primitivas.Lista;
 
 /**
- * Esta clase define la clase Estacion.
+ * Esta clase define la clase Estacion
  * 
  * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
 
- * @version: 15/10/2024
- * 
+ * @version: 16/10/2024
  */
 public class Estacion {
     private String nombre;
@@ -19,8 +15,8 @@ public class Estacion {
     private String sistema;
     private String color;
 
-    // Mapa estático de líneas a colores
-    private static Map<String, String> lineaColorMap = new HashMap<>();
+    // Lista estática para almacenar pares de línea y color
+    private static Lista<LineaColor> lineaColorLista = new Lista<>();
     private static int colorIndex = 0;
 
     // Lista de colores disponibles
@@ -40,7 +36,7 @@ public class Estacion {
     public void agregarLinea(String linea) {
         if (!lineas.exist(linea)) {
             lineas.append(linea);
-            // Actualizar el color si es necesario (opcional)
+            // Opcional: Actualizar el color
             // this.color = asignarColor(linea);
         }
     }
@@ -63,19 +59,22 @@ public class Estacion {
 
     private String asignarColor(String linea) {
         // Verificar si la línea ya tiene un color asignado
-        if (lineaColorMap.containsKey(linea)) {
-            return lineaColorMap.get(linea);
-        } else {
-            // Asignar el siguiente color disponible
-            if (colorIndex < COLORES_DISPONIBLES.length) {
-                String colorAsignado = COLORES_DISPONIBLES[colorIndex];
-                lineaColorMap.put(linea, colorAsignado);
-                colorIndex++;
-                return colorAsignado;
-            } else {
-                // Si se agotan los colores, usar 'black' o algún color por defecto
-                return "black";
+        for (int i = 0; i < lineaColorLista.len(); i++) {
+            LineaColor par = lineaColorLista.get(i);
+            if (par.linea.equals(linea)) {
+                return par.color;
             }
+        }
+
+        // Asignar el siguiente color disponible
+        if (colorIndex < COLORES_DISPONIBLES.length) {
+            String colorAsignado = COLORES_DISPONIBLES[colorIndex];
+            lineaColorLista.append(new LineaColor(linea, colorAsignado));
+            colorIndex++;
+            return colorAsignado;
+        } else {
+            // Si se agotan los colores, usar 'black' por defecto
+            return "black";
         }
     }
 
@@ -105,12 +104,27 @@ public class Estacion {
         if (this == obj) return true;
         if (!(obj instanceof Estacion)) return false;
         Estacion estacion = (Estacion) obj;
-        return nombre.equals(estacion.nombre) &&
-               sistema.equals(estacion.sistema);
+        return this.nombre.equals(estacion.nombre) &&
+               this.sistema.equals(estacion.sistema);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nombre, sistema);
+        // Implementación manual de hashCode
+        int hash = 7;
+        hash = 31 * hash + (nombre != null ? nombre.hashCode() : 0);
+        hash = 31 * hash + (sistema != null ? sistema.hashCode() : 0);
+        return hash;
+    }
+
+    // Clase interna para almacenar pares línea-color
+    private static class LineaColor {
+        String linea;
+        String color;
+
+        LineaColor(String linea, String color) {
+            this.linea = linea;
+            this.color = color;
+        }
     }
 }
