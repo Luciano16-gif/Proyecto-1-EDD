@@ -6,10 +6,15 @@ import primitivas.Lista;
 
 /**
  * Clase para manejar grafos de estaciones y arcos.
+ * 
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+ * 
+ * @version: 16/10/2024
  */
 public class Grafos {
     private Lista<Arco> arcos;
     private Lista<Estacion> estaciones;
+    private Graph graph;
 
     public Grafos() {
         arcos = new Lista<>();
@@ -36,9 +41,10 @@ public class Grafos {
         estaciones.append(estacion);
     }
 
-    public void mostrarGrafo() {
+    public void mostrarGrafo(Lista<Estacion> estaciones) {
+        this.estaciones = estaciones;
         System.setProperty("org.graphstream.ui", "swing");
-        Graph graph = new SingleGraph("Grafo Metro");
+        graph = new SingleGraph("Grafo Metro");
 
         // Agregar nodos al grafo
         for (int i = 0; i < estaciones.len(); i++) {
@@ -50,7 +56,7 @@ public class Grafos {
             // Si la estación pertenece a múltiples líneas, asignar un color especial
             String nodeColor = estacion.getColor();
             if (estacion.getLineas().len() > 1) {
-                nodeColor = "white"; // Color para intersecciones
+                nodeColor = "Gray"; // Color para intersecciones
             }
 
             graph.getNode(nodeId).setAttribute("ui.style", "fill-color: " + nodeColor + "; shape: circle; size: 15px;");
@@ -85,6 +91,36 @@ public class Grafos {
     }
 
     private void posicionarEstaciones(Graph graph) {
-        // Implementa tu lógica de posicionamiento aquí
+        
+    }
+
+    public Lista<Integer> getAdyacentes(int nodo) {
+        Lista<Integer> adyacentes = new Lista<>();
+        for (int i = 0; i < arcos.len(); i++) {
+            Arco arco = arcos.get(i);
+            if (arco.getSrc() == nodo) {
+                adyacentes.append(arco.getDest());
+            } else if (arco.getDest() == nodo) {
+                adyacentes.append(arco.getSrc());
+            }
+        }
+        return adyacentes;
+    }
+
+    public void resaltarEstaciones(Lista<Integer> indicesEstaciones, Lista<Estacion> estaciones) {
+        for (int i = 0; i < estaciones.len(); i++) {
+            String nodeId = String.valueOf(i);
+            if (indicesEstaciones.exist(i)) {
+                graph.getNode(nodeId).setAttribute("ui.style", "fill-color: gold; shape: circle; size: 20px;");
+            } else {
+                // Restaurar el estilo original
+                Estacion estacion = estaciones.get(i);
+                String nodeColor = estacion.getColor();
+                if (estacion.getLineas().len() > 1) {
+                    nodeColor = "gray"; // Color para intersecciones
+                }
+                graph.getNode(nodeId).setAttribute("ui.style", "fill-color: " + nodeColor + "; shape: circle; size: 15px;");
+            }
+        }
     }
 }
