@@ -2,6 +2,10 @@ package Objetos;
 
 /**
  * Esta clase define el objeto Arco, con diferentes atributos y funciones.
+ * 
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 15/10/2024
  */
 public class Arco implements Comparable<Arco> {
     private int src;

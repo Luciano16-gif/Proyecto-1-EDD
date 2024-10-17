@@ -1,16 +1,29 @@
 package Objetos;
 
-import java.util.Objects;
 import primitivas.Lista;
 
 /**
- * Esta clase define la clase Estacion.
+ * Esta clase define la clase Estacion
+ * 
+ * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+
+ * @version: 16/10/2024
  */
 public class Estacion {
     private String nombre;
     private Lista<String> lineas;
     private String sistema;
     private String color;
+
+    // Lista estática para almacenar pares de línea y color
+    private static Lista<LineaColor> lineaColorLista = new Lista<>();
+    private static int colorIndex = 0;
+
+    // Lista de colores disponibles
+    private static final String[] COLORES_DISPONIBLES = {
+        "red", "blue", "green", "yellow", "orange", "purple", "cyan", "magenta",
+        "brown", "lime", "teal", "navy", "pink", "gray", "darkorange", "olive", "maroon"
+    };
 
     public Estacion(String nombre, String linea, String sistema) {
         this.nombre = nombre;
@@ -43,13 +56,23 @@ public class Estacion {
     }
 
     private String asignarColor(String linea) {
-        switch (linea) {
-            case "Linea 1": return "red";
-            case "Linea 2": return "blue";
-            case "Linea 3": return "green";
-            case "Linea 4": return "yellow";
-            // Puedes agregar más líneas y colores si es necesario
-            default: return "black";
+        // Verificar si la línea ya tiene un color asignado
+        for (int i = 0; i < lineaColorLista.len(); i++) {
+            LineaColor par = lineaColorLista.get(i);
+            if (par.linea.equals(linea)) {
+                return par.color;
+            }
+        }
+
+        // Asignar el siguiente color disponible
+        if (colorIndex < COLORES_DISPONIBLES.length) {
+            String colorAsignado = COLORES_DISPONIBLES[colorIndex];
+            lineaColorLista.append(new LineaColor(linea, colorAsignado));
+            colorIndex++;
+            return colorAsignado;
+        } else {
+            // Si se agotan los colores, usar 'black' por defecto
+            return "black";
         }
     }
 
@@ -79,12 +102,27 @@ public class Estacion {
         if (this == obj) return true;
         if (!(obj instanceof Estacion)) return false;
         Estacion estacion = (Estacion) obj;
-        return nombre.equals(estacion.nombre) &&
-               sistema.equals(estacion.sistema);
+        return this.nombre.equals(estacion.nombre) &&
+               this.sistema.equals(estacion.sistema);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nombre, sistema);
+        // Implementación manual de hashCode
+        int hash = 7;
+        hash = 31 * hash + (nombre != null ? nombre.hashCode() : 0);
+        hash = 31 * hash + (sistema != null ? sistema.hashCode() : 0);
+        return hash;
+    }
+
+    // Clase interna para almacenar pares línea-color
+    private static class LineaColor {
+        String linea;
+        String color;
+
+        LineaColor(String linea, String color) {
+            this.linea = linea;
+            this.color = color;
+        }
     }
 }
