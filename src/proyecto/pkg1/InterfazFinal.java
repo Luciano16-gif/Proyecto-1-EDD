@@ -1,55 +1,104 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package proyecto.pkg1;
 
 import Objetos.Funcion;
 import Objetos.Grafos;
 import Objetos.Estacion;
+import Objetos.Sucursal;
 import primitivas.Lista;
 import javax.swing.JOptionPane;
 
-
-
 /**
-
  * Esta clase es la interfaz
-  
+ * 
  * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
-
  * @version: 16/10/2024
-
  */
-
 public class InterfazFinal extends javax.swing.JFrame {
 
     private int t = 1; // Valor inicial de t
     private Grafos grafo;
     private Lista<Estacion> estaciones;
+    private Lista<Lista<String>> estacionesCubiertasPorSucursal; // Lista para nombres de estaciones cubiertas por cada sucursal
+    private Lista<Sucursal> sucursales; // Lista de sucursales
 
     public InterfazFinal() {
         initComponents();
         grafo = new Grafos();
         estaciones = new Lista<>();
+        estacionesCubiertasPorSucursal = new Lista<>();
+        sucursales = new Lista<>(); // Lista para almacenar sucursales
     }
 
+    // Buscar estación por nombre
     private Estacion buscarEstacionPorNombre(String nombre) {
         nombre = nombre.trim().toLowerCase();
-        System.out.println("Buscando estación con nombre: '" + nombre + "'");
         for (int i = 0; i < estaciones.len(); i++) {
             Estacion estacion = estaciones.get(i);
-            String nombreEstacion = estacion.getNombre().trim().toLowerCase();
-            System.out.println("Comparando con: '" + nombreEstacion + "'");
-            if (nombreEstacion.equals(nombre)) {
-                System.out.println("¡Estación encontrada!");
+            if (estacion.getNombre().trim().toLowerCase().equals(nombre)) {
                 return estacion;
             }
         }
-        System.out.println("Estación no encontrada.");
         return null;
     }
 
+    private void agregarSucursal(String nombreSucursal, int tSucursal, Lista<String> estacionesNombres) {
+        if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
+            if (!sucursalExists(nombreSucursal.trim())) {
+                Sucursal nuevaSucursal = new Sucursal(nombreSucursal.trim(), tSucursal); // Crear nueva sucursal
+
+                // Agregar estaciones a la sucursal
+                for (int i = 0; i < estacionesNombres.len(); i++) {
+                    String nombreEstacion = estacionesNombres.get(i).trim();
+                    Estacion estacion = buscarEstacionPorNombre(nombreEstacion);
+                    if (estacion != null) {
+                        nuevaSucursal.agregarEstacion(estacion); // Agregar estación a la nueva sucursal
+                    }
+                }
+
+                sucursales.append(nuevaSucursal); // Agregar la nueva sucursal a la lista de sucursales
+                // Calcular cobertura para la primera estación de la sucursal (puedes ajustar esto si es necesario)
+                if (nuevaSucursal.getEstaciones().len() > 0) {
+                    Estacion primeraEstacion = nuevaSucursal.getEstaciones().get(0);
+                    calcularCobertura(primeraEstacion, tSucursal, "DFS"); // Calcular cobertura
+                }
+
+                JOptionPane.showMessageDialog(this, "Sucursal '" + nombreSucursal + "' agregada con éxito.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Sucursal ya existe.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Ingrese un nombre de sucursal válido.");
+        }
+    }
+
+    private boolean sucursalExists(String nombreSucursal) {
+        for (int i = 0; i < sucursales.len(); i++) {
+            if (sucursales.get(i).getNombre().equals(nombreSucursal)) {
+                return true; // La sucursal ya existe
+            }
+        }
+        return false; // La sucursal no existe
+    }
+
+    private void quitarSucursal(String nombreSucursal) {
+        if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
+            for (int i = 0; i < sucursales.len(); i++) {
+                if (sucursales.get(i).getNombre().equals(nombreSucursal.trim())) {
+                    sucursales.pop(i); // Eliminar la sucursal de la lista
+                    // Eliminar la cobertura asociada a la sucursal
+                    estacionesCubiertasPorSucursal.pop(i); // Eliminar las estaciones cubiertas por esta sucursal
+                    
+                    JOptionPane.showMessageDialog(this, "Sucursal '" + nombreSucursal + "' eliminada con éxito.");
+                    return;
+                }
+            }
+            JOptionPane.showMessageDialog(this, "Sucursal no encontrada. Por favor, verifique el nombre.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Ingrese un nombre de sucursal válido.");
+        }
+    }
+
+    // Calcular cobertura usando DFS o BFS y agregar nombres de estaciones cubiertas
     private Lista<Integer> calcularCobertura(Estacion estacionSucursal, int t, String tipoBusqueda) {
         int indiceSucursal = estaciones.indexOf(estacionSucursal);
         boolean[] visitados = new boolean[estaciones.len()];
@@ -61,10 +110,17 @@ public class InterfazFinal extends javax.swing.JFrame {
             dfs(indiceSucursal, t, 0, visitados, cobertura);
         }
 
+        // Agregar la cobertura a la lista correspondiente
+        Lista<String> coberturaSucursal = new Lista<>();
+        for (int i = 0; i < cobertura.len(); i++) {
+            int indice = cobertura.get(i);
+            coberturaSucursal.append(estaciones.get(indice).getNombre());
+        }
+        estacionesCubiertasPorSucursal.append(coberturaSucursal);
+
         return cobertura;
     }
 
-    
     private void bfs(int inicio, int limiteT, boolean[] visitados, Lista<Integer> cobertura) {
         Lista<Integer> cola = new Lista<>();
         int[] niveles = new int[estaciones.len()];
@@ -108,27 +164,22 @@ public class InterfazFinal extends javax.swing.JFrame {
     }
 
     private boolean todasEstacionesCubiertas() {
-    boolean[] visitadas = new boolean[estaciones.len()]; // Inicializamos todas las estaciones como no visitadas
-
-    // Recorremos cada estación como posible sucursal
-    for (int i = 0; i < estaciones.len(); i++) {
-        Estacion estacion = estaciones.get(i); // Tomamos cada estación como punto inicial
-        Lista<Integer> cobertura = calcularCobertura(estacion, t, "BFS");
-
-        // Marcamos las estaciones cubiertas por esta sucursal
-        for (int j = 0; j < cobertura.len(); j++) {
-            visitadas[cobertura.get(j)] = true;
+        for (int i = 0; i < estaciones.len(); i++) {
+            String nombreEstacion = estaciones.get(i).getNombre();
+            boolean cubierta = false;
+            for (int j = 0; j < estacionesCubiertasPorSucursal.len(); j++) {
+                if (estacionesCubiertasPorSucursal.get(j).exist(nombreEstacion)) {
+                    cubierta = true;
+                    break; // Si encontramos la estación cubierta, salimos del bucle
+                }
+            }
+            if (!cubierta) {
+                return false; // Si una estación no está cubierta, retornamos false
+            }
         }
+        return true;
     }
-
-    // Comprobamos si todas las estaciones fueron visitadas al menos una vez
-    for (boolean visitada : visitadas) {
-        if (!visitada) { // Si alguna estación no fue visitada, retornamos false
-            return false;
-        }
-    }
-    return true; // Si todas las estaciones fueron cubiertas, retornamos true
-}
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -146,13 +197,14 @@ public class InterfazFinal extends javax.swing.JFrame {
         dfs = new javax.swing.JButton();
         bfs = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        botonVerificarSurcusal = new javax.swing.JButton();
+        botonEliminarSucursal = new javax.swing.JButton();
         verificarsurcusal = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         BotonVerificarCobertura = new javax.swing.JButton();
+        botonVerificarSurcusal1 = new javax.swing.JButton();
 
         jTextField1.setText("jTextField1");
 
@@ -188,7 +240,7 @@ public class InterfazFinal extends javax.swing.JFrame {
                 dfsActionPerformed(evt);
             }
         });
-        getContentPane().add(dfs, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 310, 100, 50));
+        getContentPane().add(dfs, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 210, 100, 50));
 
         bfs.setBackground(new java.awt.Color(204, 255, 255));
         bfs.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
@@ -198,22 +250,22 @@ public class InterfazFinal extends javax.swing.JFrame {
                 bfsActionPerformed(evt);
             }
         });
-        getContentPane().add(bfs, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 310, 100, 50));
+        getContentPane().add(bfs, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 210, 100, 50));
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel1.setText("Seleccione el algoritmo deseado para colocar ");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 260, 310, 20));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 160, 310, 20));
 
-        botonVerificarSurcusal.setBackground(new java.awt.Color(204, 255, 255));
-        botonVerificarSurcusal.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
-        botonVerificarSurcusal.setText("Verificar existencia de la estacion");
-        botonVerificarSurcusal.addActionListener(new java.awt.event.ActionListener() {
+        botonEliminarSucursal.setBackground(new java.awt.Color(204, 255, 255));
+        botonEliminarSucursal.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
+        botonEliminarSucursal.setText("Eliminar Sucursal");
+        botonEliminarSucursal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botonVerificarSurcusalActionPerformed(evt);
+                botonEliminarSucursalActionPerformed(evt);
             }
         });
-        getContentPane().add(botonVerificarSurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 200, 290, 50));
-        getContentPane().add(verificarsurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 160, 350, 30));
+        getContentPane().add(botonEliminarSucursal, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 320, 160, 50));
+        getContentPane().add(verificarsurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 60, 350, 30));
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel2.setText("Introduzca el numero de T con el cual ");
@@ -225,47 +277,59 @@ public class InterfazFinal extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel4.setText("Escriba el nombre de la estacion para verificar su existencia");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 130, -1, -1));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 30, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel5.setText("y ver la cobertura de la sucursal.");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 280, -1, -1));
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 180, -1, -1));
 
+        BotonVerificarCobertura.setBackground(new java.awt.Color(204, 255, 255));
+        BotonVerificarCobertura.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         BotonVerificarCobertura.setText("Verificar Cobertura Completa");
         BotonVerificarCobertura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BotonVerificarCoberturaActionPerformed(evt);
             }
         });
-        getContentPane().add(BotonVerificarCobertura, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 40, -1, -1));
+        getContentPane().add(BotonVerificarCobertura, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 270, 260, 40));
+
+        botonVerificarSurcusal1.setBackground(new java.awt.Color(204, 255, 255));
+        botonVerificarSurcusal1.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
+        botonVerificarSurcusal1.setText("Verificar existencia de la estacion");
+        botonVerificarSurcusal1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonVerificarSurcusal1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(botonVerificarSurcusal1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 100, 290, 50));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void dfsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dfsActionPerformed
          String nombreSucursal = verificarsurcusal.getText();
-    if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
-        Estacion estacionSucursal = buscarEstacionPorNombre(nombreSucursal.trim());
-        if (estacionSucursal != null) {
-            Lista<Integer> cobertura = calcularCobertura(estacionSucursal, t, "DFS");
-            grafo.resaltarEstaciones(cobertura, estaciones);
-        } else {
-            JOptionPane.showMessageDialog(this, "Estación no encontrada. Por favor, verifique el nombre.");
+        if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
+            Estacion estacionSucursal = buscarEstacionPorNombre(nombreSucursal.trim());
+            if (estacionSucursal != null) {
+                Lista<Integer> cobertura = calcularCobertura(estacionSucursal, t, "DFS");
+                grafo.resaltarEstaciones(cobertura, estaciones);
+            } else {
+                JOptionPane.showMessageDialog(this, "Estación no encontrada. Por favor, verifique el nombre.");
+            }
         }
-    }
     }//GEN-LAST:event_dfsActionPerformed
 
     private void bfsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bfsActionPerformed
-        String nombreSucursal =verificarsurcusal.getText();
-    if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
-        Estacion estacionSucursal = buscarEstacionPorNombre(nombreSucursal.trim());
-        if (estacionSucursal != null) {
-            Lista<Integer> cobertura = calcularCobertura(estacionSucursal, t, "BFS");
-            grafo.resaltarEstaciones(cobertura, estaciones);
-        } else {
-            JOptionPane.showMessageDialog(this, "Estación no encontrada. Por favor, verifique el nombre.");
+        String nombreSucursal = verificarsurcusal.getText();
+        if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
+            Estacion estacionSucursal = buscarEstacionPorNombre(nombreSucursal.trim());
+            if (estacionSucursal != null) {
+                Lista<Integer> cobertura = calcularCobertura(estacionSucursal, t, "BFS");
+                grafo.resaltarEstaciones(cobertura, estaciones);
+            } else {
+                JOptionPane.showMessageDialog(this, "Estación no encontrada. Por favor, verifique el nombre.");
+            }
         }
-    }
     }//GEN-LAST:event_bfsActionPerformed
 
     private void botonEstablecerTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEstablecerTActionPerformed
@@ -295,8 +359,21 @@ public class InterfazFinal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_botonCargarJsonActionPerformed
 
-    private void botonVerificarSurcusalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonVerificarSurcusalActionPerformed
+    private void botonEliminarSucursalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarSucursalActionPerformed
        String nombreSucursal = verificarsurcusal.getText();
+        quitarSucursal(nombreSucursal); // Llama a la función para quitar la sucursal
+    }//GEN-LAST:event_botonEliminarSucursalActionPerformed
+
+    private void BotonVerificarCoberturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonVerificarCoberturaActionPerformed
+        if (todasEstacionesCubiertas()) {
+            JOptionPane.showMessageDialog(this, "Todas las estaciones están cubiertas por una sucursal.");
+        } else {
+            JOptionPane.showMessageDialog(this, "No todas las estaciones están cubiertas.");
+        }
+    }//GEN-LAST:event_BotonVerificarCoberturaActionPerformed
+
+    private void botonVerificarSurcusal1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonVerificarSurcusal1ActionPerformed
+        String nombreSucursal = verificarsurcusal.getText();
         if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
             Estacion estacionSucursal = buscarEstacionPorNombre(nombreSucursal.trim());
             if (estacionSucursal != null) {
@@ -305,15 +382,7 @@ public class InterfazFinal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Estación no encontrada. Por favor, verifique el nombre.");
             }
         }
-    }//GEN-LAST:event_botonVerificarSurcusalActionPerformed
-
-    private void BotonVerificarCoberturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonVerificarCoberturaActionPerformed
-        if (todasEstacionesCubiertas()) {
-        JOptionPane.showMessageDialog(this, "Todas las estaciones están cubiertas por una sucursal.");
-    } else {
-        JOptionPane.showMessageDialog(this, "No todas las estaciones están cubiertas.");
-    }
-    }//GEN-LAST:event_BotonVerificarCoberturaActionPerformed
+    }//GEN-LAST:event_botonVerificarSurcusal1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -354,8 +423,9 @@ public class InterfazFinal extends javax.swing.JFrame {
     private javax.swing.JButton BotonVerificarCobertura;
     private javax.swing.JButton bfs;
     private javax.swing.JButton botonCargarJson;
+    private javax.swing.JButton botonEliminarSucursal;
     private javax.swing.JButton botonEstablecerT;
-    private javax.swing.JButton botonVerificarSurcusal;
+    private javax.swing.JButton botonVerificarSurcusal1;
     private javax.swing.JButton dfs;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
