@@ -36,8 +36,6 @@ public class Estacion {
     public void agregarLinea(String linea) {
         if (!lineas.exist(linea)) {
             lineas.append(linea);
-            // Opcional: Actualizar el color
-            // this.color = asignarColor(linea);
         }
     }
 

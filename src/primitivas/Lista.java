@@ -257,4 +257,25 @@ public class Lista<T> {
         return -1; // No encontrado
     }
     
+    // Obtener el índice del elemento, si el índice es válido elimina el nodo en el índice encontrado
+    public void remove(T data) {
+        int index = indexOf(data); 
+        if (index != -1) { 
+            pop(index); 
+        }
+    }
+    
+    public boolean existenciaDistinta(String data) {
+    if (head == null) { // Comprueba si la lista está vacía
+        return false;
+    }
+    Nodo current = head;
+    while (current != null) {
+        if (current.getData().equals(data)) {
+            return true;
+        }
+        current = current.getNext();
+    }
+    return false;
+}
 }
