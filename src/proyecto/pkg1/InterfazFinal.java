@@ -217,6 +217,42 @@ public class InterfazFinal extends javax.swing.JFrame {
         return true;
     }
     
+    private void sugerirSucursal() {
+    Estacion mejorEstacion = null;
+    int maxCobertura = 0;
+
+    // Iterar sobre todas las estaciones
+    for (int i = 0; i < estaciones.len(); i++) {
+        Estacion estacion = estaciones.get(i);
+
+        // Solo considerar estaciones que aún no son sucursales
+        if (!estacion.esSucursal()) {
+            // Calcular cobertura para esta estación usando el tipo de búsqueda seleccionado
+            Lista<Integer> cobertura = calcularCobertura(estacion, t, tipoBusqueda);
+
+            // Verificar si esta estación tiene una mejor cobertura que las anteriores
+            if (cobertura.len() > maxCobertura) {
+                maxCobertura = cobertura.len();
+                mejorEstacion = estacion;
+            }
+        }
+    }
+
+    // Mostrar sugerencia al usuario
+    if (mejorEstacion != null) {
+        JOptionPane.showMessageDialog(this,
+                "Se sugiere convertir la estación '" + mejorEstacion.getNombre() + 
+                "' en sucursal, ya que cubre " + maxCobertura + " estaciones usando " + tipoBusqueda + ".",
+                "Sugerencia de Sucursal",
+                JOptionPane.INFORMATION_MESSAGE);
+    } else {
+        JOptionPane.showMessageDialog(this,
+                "No hay estaciones disponibles para sugerir como sucursal.",
+                "Sugerencia de Sucursal",
+                JOptionPane.WARNING_MESSAGE);
+    }
+}
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -242,6 +278,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         BotonVerificarCobertura = new javax.swing.JButton();
         botonAgregarSurcusal1 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         jTextField1.setText("jTextField1");
 
@@ -340,6 +377,16 @@ public class InterfazFinal extends javax.swing.JFrame {
         });
         getContentPane().add(botonAgregarSurcusal1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 100, 290, 50));
 
+        jButton1.setBackground(new java.awt.Color(204, 255, 255));
+        jButton1.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
+        jButton1.setText("Sugerir Sucursal");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 380, 160, 40));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -428,6 +475,49 @@ public class InterfazFinal extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_botonAgregarSurcusal1ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    if (todasEstacionesCubiertas()) {
+        JOptionPane.showMessageDialog(this,
+                "Todas las estaciones ya están cubiertas por alguna sucursal.",
+                "Sugerencia de Sucursal",
+                JOptionPane.INFORMATION_MESSAGE);
+        return; // Termina la ejecución si todas están cubiertas
+    }
+
+    Estacion mejorEstacion = null;
+    int maxCobertura = 0;
+
+    // Iterar sobre todas las estaciones no marcadas como sucursales
+    for (int i = 0; i < estaciones.len(); i++) {
+        Estacion estacion = estaciones.get(i);
+
+        if (!estacion.esSucursal()) {
+            // Calcular cobertura para esta estación
+            Lista<Integer> cobertura = calcularCobertura(estacion, t, tipoBusqueda);
+
+            // Verificar si tiene una cobertura mayor que las anteriores
+            if (cobertura.len() > maxCobertura) {
+                maxCobertura = cobertura.len();
+                mejorEstacion = estacion;
+            }
+        }
+    }
+
+    // Mostrar sugerencia al usuario
+    if (mejorEstacion != null) {
+        JOptionPane.showMessageDialog(this,
+                "Se sugiere convertir la estación '" + mejorEstacion.getNombre() + 
+                "' en sucursal, ya que cubre " + maxCobertura + " estaciones usando " + tipoBusqueda + ".",
+                "Sugerencia de Sucursal",
+                JOptionPane.INFORMATION_MESSAGE);
+    } else {
+        JOptionPane.showMessageDialog(this,
+                "No hay estaciones disponibles para sugerir como sucursal.",
+                "Sugerencia de Sucursal",
+                JOptionPane.WARNING_MESSAGE);
+    }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -442,6 +532,7 @@ public class InterfazFinal extends javax.swing.JFrame {
     private javax.swing.JButton botonEliminarSucursal;
     private javax.swing.JButton botonEstablecerT;
     private javax.swing.JButton dfs;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
