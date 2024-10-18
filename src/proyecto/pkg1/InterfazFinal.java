@@ -8,7 +8,7 @@ import primitivas.Lista;
 import javax.swing.JOptionPane;
 
 /**
- * Esta clase es la interfaz
+ * Esta clase que define la interfaz
  * 
  * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
  * @version: 16/10/2024
@@ -97,7 +97,7 @@ public class InterfazFinal extends javax.swing.JFrame {
                                 grafo.resaltarEstaciones(coberturasSucursales, estaciones);
                                 
                                 JOptionPane.showMessageDialog(this, 
-                                    "Sucursal '" + nombreSucursal + "' agregada con éxito en la estación '" + 
+                                    "Sucursal agregada con éxito en la estación '" + 
                                     nombreEstacion + "'");
                             }
                         } else {
@@ -508,7 +508,7 @@ public class InterfazFinal extends javax.swing.JFrame {
                 grafo.resaltarEstaciones(coberturasSucursales, estaciones);
 
                 // Mostrar mensaje de éxito
-                JOptionPane.showMessageDialog(this, "Sucursal '" + nombreSucursal + "' añadida exitosamente usando " + tipoBusqueda + ".");
+                JOptionPane.showMessageDialog(this, "Sucursal añadida exitosamente usando " + tipoBusqueda + ".");
             } else {
                 JOptionPane.showMessageDialog(this, "La estación seleccionada ya es una sucursal.");
             }
