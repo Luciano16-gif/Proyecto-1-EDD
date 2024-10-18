@@ -309,6 +309,7 @@ public class InterfazFinal extends javax.swing.JFrame {
     private void initComponents() {
 
         jTextField1 = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
         botonCargarJson = new javax.swing.JButton();
         botonEstablecerT = new javax.swing.JButton();
         obtenerT = new javax.swing.JTextField();
@@ -323,9 +324,15 @@ public class InterfazFinal extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         BotonVerificarCobertura = new javax.swing.JButton();
         botonAgregarSurcusal1 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        sugerirSurcusal = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        agregarLineaNueva = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
 
         jTextField1.setText("jTextField1");
+
+        jLabel6.setText("jLabel6");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -338,7 +345,7 @@ public class InterfazFinal extends javax.swing.JFrame {
                 botonCargarJsonActionPerformed(evt);
             }
         });
-        getContentPane().add(botonCargarJson, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 150, 60));
+        getContentPane().add(botonCargarJson, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 50, 150, 60));
 
         botonEstablecerT.setBackground(new java.awt.Color(204, 255, 255));
         botonEstablecerT.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
@@ -348,8 +355,8 @@ public class InterfazFinal extends javax.swing.JFrame {
                 botonEstablecerTActionPerformed(evt);
             }
         });
-        getContentPane().add(botonEstablecerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 210, 130, 40));
-        getContentPane().add(obtenerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 180, 170, -1));
+        getContentPane().add(botonEstablecerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 220, 170, 50));
+        getContentPane().add(obtenerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 180, 170, -1));
 
         dfs.setBackground(new java.awt.Color(204, 255, 255));
         dfs.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
@@ -383,7 +390,7 @@ public class InterfazFinal extends javax.swing.JFrame {
                 botonEliminarSucursalActionPerformed(evt);
             }
         });
-        getContentPane().add(botonEliminarSucursal, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 320, 160, 50));
+        getContentPane().add(botonEliminarSucursal, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 350, 180, 50));
         getContentPane().add(agregarSurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 60, 350, 30));
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
@@ -422,15 +429,34 @@ public class InterfazFinal extends javax.swing.JFrame {
         });
         getContentPane().add(botonAgregarSurcusal1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 100, 290, 50));
 
-        jButton1.setBackground(new java.awt.Color(204, 255, 255));
-        jButton1.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
-        jButton1.setText("Sugerir Sucursal");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        sugerirSurcusal.setBackground(new java.awt.Color(204, 255, 255));
+        sugerirSurcusal.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
+        sugerirSurcusal.setText("Sugerir Sucursal");
+        sugerirSurcusal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                sugerirSurcusalActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 380, 160, 40));
+        getContentPane().add(sugerirSurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 410, 180, 50));
+
+        jLabel7.setText("Selecciona para ingresar una linea nueva");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 300, 270, 50));
+
+        agregarLineaNueva.setBackground(new java.awt.Color(204, 255, 255));
+        agregarLineaNueva.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
+        agregarLineaNueva.setText("Agregar Linea Nueva");
+        agregarLineaNueva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                agregarLineaNuevaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(agregarLineaNueva, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 350, 210, 70));
+
+        jLabel8.setText("Cargar Json de Caracas, Bogota, Otra");
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 260, 30));
+
+        jLabel9.setText("Selecciona si quieres Eliminar o Sugerir una Surcusal");
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 320, 330, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -520,7 +546,7 @@ public class InterfazFinal extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_botonAgregarSurcusal1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void sugerirSurcusalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sugerirSurcusalActionPerformed
         if (todasEstacionesCubiertas()) {
             JOptionPane.showMessageDialog(this,
                 "Todas las estaciones ya están cubiertas por alguna sucursal.",
@@ -561,7 +587,11 @@ public class InterfazFinal extends javax.swing.JFrame {
                 "Sugerencia de Sucursal",
                 JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_sugerirSurcusalActionPerformed
+
+    private void agregarLineaNuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarLineaNuevaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_agregarLineaNuevaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -570,6 +600,7 @@ public class InterfazFinal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BotonVerificarCobertura;
+    private javax.swing.JButton agregarLineaNueva;
     private javax.swing.JTextField agregarSurcusal;
     private javax.swing.JButton bfs;
     private javax.swing.JButton botonAgregarSurcusal1;
@@ -577,13 +608,17 @@ public class InterfazFinal extends javax.swing.JFrame {
     private javax.swing.JButton botonEliminarSucursal;
     private javax.swing.JButton botonEstablecerT;
     private javax.swing.JButton dfs;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField obtenerT;
+    private javax.swing.JButton sugerirSurcusal;
     // End of variables declaration//GEN-END:variables
 }
