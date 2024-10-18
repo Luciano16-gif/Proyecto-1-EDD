@@ -52,7 +52,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         return null;
     }
 
-     private void agregarSucursalActionPerformed(java.awt.event.ActionEvent evt) {
+    private void agregarSucursalActionPerformed(java.awt.event.ActionEvent evt) {
         String nombreEstacion = agregarSurcusal.getText();
         if (nombreEstacion != null && !nombreEstacion.trim().isEmpty()) {
             nombreEstacion = nombreEstacion.trim();
@@ -116,32 +116,77 @@ public class InterfazFinal extends javax.swing.JFrame {
         }
     }
 
+    private void actualizarCoberturaEstaciones() {
+    // Crear un arreglo de booleanos para marcar estaciones cubiertas
+    boolean[] cubiertas = new boolean[estaciones.len()];
 
-
-    private void quitarSucursal(String nombreSucursal) {
-        if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
-            for (int i = 0; i < sucursales.len(); i++) {
-                if (sucursales.get(i).getNombre().equals(nombreSucursal.trim())) {
-                    // Obtener la estación base de la sucursal
-                    Estacion estacionBase = sucursales.get(i).getEstaciones().get(0);
-                    estacionBase.setEsSucursal(false);
-                
-                    // Eliminar la sucursal y su cobertura
-                    sucursales.pop(i);
-                    coberturasSucursales.pop(i);
-
-                    // Actualizar la visualización del grafo
-                    grafo.resaltarEstaciones(coberturasSucursales, estaciones);
-
-                    JOptionPane.showMessageDialog(this, 
-                        "Sucursal '" + nombreSucursal + "' eliminada con éxito.");
-                    return;
-                }
-            }
-            JOptionPane.showMessageDialog(this, 
-                "Sucursal no encontrada. Por favor, verifique el nombre.");
+    // Revisar todas las coberturas de las sucursales restantes
+    for (int i = 0; i < coberturasSucursales.len(); i++) {
+        Lista<Integer> cobertura = coberturasSucursales.get(i);
+        for (int j = 0; j < cobertura.len(); j++) {
+            cubiertas[cobertura.get(j)] = true; // Marcar estación como cubierta
         }
     }
+
+    // Marcar las estaciones que ya no están cubiertas
+    for (int i = 0; i < estaciones.len(); i++) {
+        if (!cubiertas[i]) {
+            estaciones.get(i).setEsSucursal(false); // Marcar como no cubierta
+        }
+    }
+}
+
+
+    private void eliminarSucursal(String nombreEstacion) {
+    if (nombreEstacion == null || nombreEstacion.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, 
+                "Ingrese un nombre válido de estación.", 
+                "Error", 
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    nombreEstacion = nombreEstacion.trim().toLowerCase(); // Normalización
+
+    // Buscar la estación en la lista
+    Estacion estacion = buscarEstacionPorNombre(nombreEstacion);
+
+    if (estacion != null && estacion.esSucursal()) {
+        // Buscar la sucursal asociada a esta estación y su índice
+        for (int i = 0; i < sucursales.len(); i++) {
+            Sucursal sucursal = sucursales.get(i);
+
+            // Verificar si la estación está dentro de la sucursal
+            if (sucursal.getEstaciones().exist(estacion)) {
+                // Marcar la estación como no sucursal
+                estacion.setEsSucursal(false);
+
+                // Eliminar la sucursal y su cobertura
+                sucursales.pop(i);
+                coberturasSucursales.pop(i);
+
+                // Actualizar las coberturas restantes
+                actualizarCoberturaEstaciones();
+
+                // Actualizar la visualización del grafo
+                grafo.resaltarEstaciones(coberturasSucursales, estaciones);
+
+                JOptionPane.showMessageDialog(this, 
+                        "Sucursal en la estación '" + nombreEstacion + "' eliminada con éxito.", 
+                        "Eliminar Sucursal", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+        }
+    }
+
+    // Si no se encontró la estación o no es sucursal
+    JOptionPane.showMessageDialog(this, 
+            "No se encontró una sucursal en la estación indicada. Por favor, verifique el nombre.", 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+}
+
 
     // Calcular cobertura usando DFS o BFS y agregar nombres de estaciones cubiertas
     private Lista<Integer> calcularCobertura(Estacion estacionSucursal, int t, String tipoBusqueda) {
@@ -428,8 +473,8 @@ public class InterfazFinal extends javax.swing.JFrame {
     }//GEN-LAST:event_botonCargarJsonActionPerformed
 
     private void botonEliminarSucursalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarSucursalActionPerformed
-       String nombreSucursal = agregarSurcusal.getText();
-        quitarSucursal(nombreSucursal); // Llama a la función para quitar la sucursal
+       String nombreSucursal = agregarSurcusal.getText().trim();
+    eliminarSucursal(nombreSucursal);
     }//GEN-LAST:event_botonEliminarSucursalActionPerformed
 
     private void BotonVerificarCoberturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonVerificarCoberturaActionPerformed
@@ -476,46 +521,46 @@ public class InterfazFinal extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAgregarSurcusal1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    if (todasEstacionesCubiertas()) {
-        JOptionPane.showMessageDialog(this,
+        if (todasEstacionesCubiertas()) {
+            JOptionPane.showMessageDialog(this,
                 "Todas las estaciones ya están cubiertas por alguna sucursal.",
                 "Sugerencia de Sucursal",
                 JOptionPane.INFORMATION_MESSAGE);
-        return; // Termina la ejecución si todas están cubiertas
-    }
+            return; // Termina la ejecución si todas están cubiertas
+        }
 
-    Estacion mejorEstacion = null;
-    int maxCobertura = 0;
+        Estacion mejorEstacion = null;
+        int maxCobertura = 0;
 
-    // Iterar sobre todas las estaciones no marcadas como sucursales
-    for (int i = 0; i < estaciones.len(); i++) {
-        Estacion estacion = estaciones.get(i);
+        // Iterar sobre todas las estaciones no marcadas como sucursales
+        for (int i = 0; i < estaciones.len(); i++) {
+            Estacion estacion = estaciones.get(i);
 
-        if (!estacion.esSucursal()) {
-            // Calcular cobertura para esta estación
-            Lista<Integer> cobertura = calcularCobertura(estacion, t, tipoBusqueda);
+            if (!estacion.esSucursal()) {
+                // Calcular cobertura para esta estación
+                Lista<Integer> cobertura = calcularCobertura(estacion, t, tipoBusqueda);
 
-            // Verificar si tiene una cobertura mayor que las anteriores
-            if (cobertura.len() > maxCobertura) {
-                maxCobertura = cobertura.len();
-                mejorEstacion = estacion;
+                // Verificar si tiene una cobertura mayor que las anteriores
+                if (cobertura.len() > maxCobertura) {
+                    maxCobertura = cobertura.len();
+                    mejorEstacion = estacion;
+                }
             }
         }
-    }
 
-    // Mostrar sugerencia al usuario
-    if (mejorEstacion != null) {
-        JOptionPane.showMessageDialog(this,
-                "Se sugiere convertir la estación '" + mejorEstacion.getNombre() + 
+        // Mostrar sugerencia al usuario
+        if (mejorEstacion != null) {
+            JOptionPane.showMessageDialog(this,
+                "Se sugiere convertir la estación '" + mejorEstacion.getNombre() +
                 "' en sucursal, ya que cubre " + maxCobertura + " estaciones usando " + tipoBusqueda + ".",
                 "Sugerencia de Sucursal",
                 JOptionPane.INFORMATION_MESSAGE);
-    } else {
-        JOptionPane.showMessageDialog(this,
+        } else {
+            JOptionPane.showMessageDialog(this,
                 "No hay estaciones disponibles para sugerir como sucursal.",
                 "Sugerencia de Sucursal",
                 JOptionPane.WARNING_MESSAGE);
-    }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
