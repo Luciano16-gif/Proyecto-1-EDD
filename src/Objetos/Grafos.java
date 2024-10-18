@@ -107,14 +107,40 @@ public class Grafos {
         return adyacentes;
     }
 
-    public void resaltarEstaciones(Lista<Integer> indicesEstaciones, Lista<Estacion> estaciones) {
+    public void resaltarEstaciones(Lista<Lista<Integer>> coberturasSucursales, Lista<Estacion> estaciones) {
+        // Crear un arreglo para rastrear las estaciones cubiertas y sucursales
+        boolean[] estacionesCubiertas = new boolean[estaciones.len()];
+        boolean[] estacionesSucursal = new boolean[estaciones.len()];
+
+        // Marcar las estaciones que son sucursales
+        for (int i = 0; i < estaciones.len(); i++) {
+            if (estaciones.get(i).esSucursal()) {
+                estacionesSucursal[i] = true;
+        }
+        }
+
+        // Marcar las estaciones cubiertas por las sucursales
+        for (int s = 0; s < coberturasSucursales.len(); s++) {
+            Lista<Integer> cobertura = coberturasSucursales.get(s);
+            for (int i = 0; i < cobertura.len(); i++) {
+                int indiceEstacion = cobertura.get(i);
+                estacionesCubiertas[indiceEstacion] = true;
+            }
+        }
+
+        // Actualizar los estilos de las estaciones
         for (int i = 0; i < estaciones.len(); i++) {
             String nodeId = String.valueOf(i);
-            if (indicesEstaciones.exist(i)) {
+            Estacion estacion = estaciones.get(i);
+
+            if (estacionesSucursal[i]) {
+                // Estación que es una sucursal
+                graph.getNode(nodeId).setAttribute("ui.style", "fill-color: red; shape: box; size: 20px;");
+            } else if (estacionesCubiertas[i]) {
+                // Estación cubierta por al menos una sucursal
                 graph.getNode(nodeId).setAttribute("ui.style", "fill-color: gold; shape: circle; size: 20px;");
             } else {
-                // Restaurar el estilo original
-                Estacion estacion = estaciones.get(i);
+                // Estación no cubierta
                 String nodeColor = estacion.getColor();
                 if (estacion.getLineas().len() > 1) {
                     nodeColor = "gray"; // Color para intersecciones

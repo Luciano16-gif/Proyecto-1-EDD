@@ -18,16 +18,27 @@ public class InterfazFinal extends javax.swing.JFrame {
     private int t = 1; // Valor inicial de t
     private Grafos grafo;
     private Lista<Estacion> estaciones;
-    private Lista<Lista<String>> estacionesCubiertasPorSucursal; // Lista para nombres de estaciones cubiertas por cada sucursal
-    private Lista<Sucursal> sucursales; // Lista de sucursales
+    private Lista<Sucursal> sucursales; // Lista para almacenar sucursales
+    private Lista<Lista<Integer>> coberturasSucursales;
+    
+    private String tipoBusqueda = "BFS";
 
     public InterfazFinal() {
         initComponents();
         grafo = new Grafos();
         estaciones = new Lista<>();
-        estacionesCubiertasPorSucursal = new Lista<>();
-        sucursales = new Lista<>(); // Lista para almacenar sucursales
+        sucursales = new Lista<>();
+        coberturasSucursales = new Lista<>();
     }
+    
+    private boolean sucursalExists(String nombreSucursal) {
+        for (int i = 0; i < sucursales.len(); i++) {
+            if (sucursales.get(i).getNombre().equals(nombreSucursal)) {
+                return true; // La sucursal ya existe
+            }
+        }
+    return false; // La sucursal no existe
+}
 
     // Buscar estación por nombre
     private Estacion buscarEstacionPorNombre(String nombre) {
@@ -41,60 +52,94 @@ public class InterfazFinal extends javax.swing.JFrame {
         return null;
     }
 
-    private void agregarSucursal(String nombreSucursal, int tSucursal, Lista<String> estacionesNombres) {
-        if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
-            if (!sucursalExists(nombreSucursal.trim())) {
-                Sucursal nuevaSucursal = new Sucursal(nombreSucursal.trim(), tSucursal); // Crear nueva sucursal
-
-                // Agregar estaciones a la sucursal
-                for (int i = 0; i < estacionesNombres.len(); i++) {
-                    String nombreEstacion = estacionesNombres.get(i).trim();
-                    Estacion estacion = buscarEstacionPorNombre(nombreEstacion);
-                    if (estacion != null) {
-                        nuevaSucursal.agregarEstacion(estacion); // Agregar estación a la nueva sucursal
+     private void agregarSucursalActionPerformed(java.awt.event.ActionEvent evt) {
+        String nombreEstacion = agregarSurcusal.getText();
+        if (nombreEstacion != null && !nombreEstacion.trim().isEmpty()) {
+            nombreEstacion = nombreEstacion.trim();
+            
+            // Verificar si la estación existe
+            Estacion estacionBase = buscarEstacionPorNombre(nombreEstacion);
+            if (estacionBase != null) {
+                // Verificar si la estación ya es una sucursal
+                if (!estacionBase.esSucursal()) {
+                    // Solicitar nombre para la nueva sucursal
+                    String nombreSucursal = JOptionPane.showInputDialog(this, "Ingrese un nombre para la sucursal:");
+                    if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
+                        nombreSucursal = nombreSucursal.trim();
+                        
+                        // Verificar si ya existe una sucursal con ese nombre
+                        if (!sucursalExists(nombreSucursal)) {
+                            // Crear nueva sucursal
+                            Sucursal nuevaSucursal = new Sucursal(nombreSucursal, t);
+                            nuevaSucursal.agregarEstacion(estacionBase);
+                            sucursales.append(nuevaSucursal);
+                            
+                            // Marcar la estación como sucursal
+                            estacionBase.setEsSucursal(true);
+                            
+                            // Calcular y agregar la cobertura de la nueva sucursal
+                            String[] opciones = {"BFS", "DFS"};
+                            int opcionBusqueda = JOptionPane.showOptionDialog(this,
+                                "Seleccione el tipo de búsqueda:",
+                                "Tipo de Búsqueda",
+                                JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.INFORMATION_MESSAGE,
+                                null,
+                                opciones,
+                                opciones[0]);
+                            
+                            if (opcionBusqueda != -1) {
+                                String tipoBusqueda = opciones[opcionBusqueda];
+                                Lista<Integer> cobertura = calcularCobertura(estacionBase, t, tipoBusqueda);
+                                coberturasSucursales.append(cobertura);
+                                
+                                // Actualizar la visualización del grafo
+                                grafo.resaltarEstaciones(coberturasSucursales, estaciones);
+                                
+                                JOptionPane.showMessageDialog(this, 
+                                    "Sucursal '" + nombreSucursal + "' agregada con éxito en la estación '" + 
+                                    nombreEstacion + "'");
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(this, 
+                                "Ya existe una sucursal con ese nombre.");
+                        }
                     }
+                } else {
+                    JOptionPane.showMessageDialog(this, 
+                        "Esta estación ya es una sucursal.");
                 }
-
-                sucursales.append(nuevaSucursal); // Agregar la nueva sucursal a la lista de sucursales
-                // Calcular cobertura para la primera estación de la sucursal (puedes ajustar esto si es necesario)
-                if (nuevaSucursal.getEstaciones().len() > 0) {
-                    Estacion primeraEstacion = nuevaSucursal.getEstaciones().get(0);
-                    calcularCobertura(primeraEstacion, tSucursal, "DFS"); // Calcular cobertura
-                }
-
-                JOptionPane.showMessageDialog(this, "Sucursal '" + nombreSucursal + "' agregada con éxito.");
             } else {
-                JOptionPane.showMessageDialog(this, "Sucursal ya existe.");
+                JOptionPane.showMessageDialog(this, 
+                    "Estación no encontrada. Por favor, verifique el nombre.");
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Ingrese un nombre de sucursal válido.");
         }
     }
 
-    private boolean sucursalExists(String nombreSucursal) {
-        for (int i = 0; i < sucursales.len(); i++) {
-            if (sucursales.get(i).getNombre().equals(nombreSucursal)) {
-                return true; // La sucursal ya existe
-            }
-        }
-        return false; // La sucursal no existe
-    }
+
 
     private void quitarSucursal(String nombreSucursal) {
         if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
             for (int i = 0; i < sucursales.len(); i++) {
                 if (sucursales.get(i).getNombre().equals(nombreSucursal.trim())) {
-                    sucursales.pop(i); // Eliminar la sucursal de la lista
-                    // Eliminar la cobertura asociada a la sucursal
-                    estacionesCubiertasPorSucursal.pop(i); // Eliminar las estaciones cubiertas por esta sucursal
-                    
-                    JOptionPane.showMessageDialog(this, "Sucursal '" + nombreSucursal + "' eliminada con éxito.");
+                    // Obtener la estación base de la sucursal
+                    Estacion estacionBase = sucursales.get(i).getEstaciones().get(0);
+                    estacionBase.setEsSucursal(false);
+                
+                    // Eliminar la sucursal y su cobertura
+                    sucursales.pop(i);
+                    coberturasSucursales.pop(i);
+
+                    // Actualizar la visualización del grafo
+                    grafo.resaltarEstaciones(coberturasSucursales, estaciones);
+
+                    JOptionPane.showMessageDialog(this, 
+                        "Sucursal '" + nombreSucursal + "' eliminada con éxito.");
                     return;
                 }
             }
-            JOptionPane.showMessageDialog(this, "Sucursal no encontrada. Por favor, verifique el nombre.");
-        } else {
-            JOptionPane.showMessageDialog(this, "Ingrese un nombre de sucursal válido.");
+            JOptionPane.showMessageDialog(this, 
+                "Sucursal no encontrada. Por favor, verifique el nombre.");
         }
     }
 
@@ -109,15 +154,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         } else {
             dfs(indiceSucursal, t, 0, visitados, cobertura);
         }
-
-        // Agregar la cobertura a la lista correspondiente
-        Lista<String> coberturaSucursal = new Lista<>();
-        for (int i = 0; i < cobertura.len(); i++) {
-            int indice = cobertura.get(i);
-            coberturaSucursal.append(estaciones.get(indice).getNombre());
-        }
-        estacionesCubiertasPorSucursal.append(coberturaSucursal);
-
+        
         return cobertura;
     }
 
@@ -165,12 +202,12 @@ public class InterfazFinal extends javax.swing.JFrame {
 
     private boolean todasEstacionesCubiertas() {
         for (int i = 0; i < estaciones.len(); i++) {
-            String nombreEstacion = estaciones.get(i).getNombre();
             boolean cubierta = false;
-            for (int j = 0; j < estacionesCubiertasPorSucursal.len(); j++) {
-                if (estacionesCubiertasPorSucursal.get(j).exist(nombreEstacion)) {
+            for (int j = 0; j < coberturasSucursales.len(); j++) {
+                Lista<Integer> cobertura = coberturasSucursales.get(j);
+                if (cobertura.exist(i)) {
                     cubierta = true;
-                    break; // Si encontramos la estación cubierta, salimos del bucle
+                    break;
                 }
             }
             if (!cubierta) {
@@ -198,13 +235,13 @@ public class InterfazFinal extends javax.swing.JFrame {
         bfs = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         botonEliminarSucursal = new javax.swing.JButton();
-        verificarsurcusal = new javax.swing.JTextField();
+        agregarSurcusal = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         BotonVerificarCobertura = new javax.swing.JButton();
-        botonVerificarSurcusal1 = new javax.swing.JButton();
+        botonAgregarSurcusal1 = new javax.swing.JButton();
 
         jTextField1.setText("jTextField1");
 
@@ -265,7 +302,7 @@ public class InterfazFinal extends javax.swing.JFrame {
             }
         });
         getContentPane().add(botonEliminarSucursal, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 320, 160, 50));
-        getContentPane().add(verificarsurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 60, 350, 30));
+        getContentPane().add(agregarSurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 60, 350, 30));
 
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel2.setText("Introduzca el numero de T con el cual ");
@@ -276,8 +313,8 @@ public class InterfazFinal extends javax.swing.JFrame {
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 220, -1));
 
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel4.setText("Escriba el nombre de la estacion para verificar su existencia");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 30, -1, -1));
+        jLabel4.setText("Escriba el nombre de la estacion para agregar sucursal");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 30, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
         jLabel5.setText("y ver la cobertura de la sucursal.");
@@ -293,43 +330,27 @@ public class InterfazFinal extends javax.swing.JFrame {
         });
         getContentPane().add(BotonVerificarCobertura, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 270, 260, 40));
 
-        botonVerificarSurcusal1.setBackground(new java.awt.Color(204, 255, 255));
-        botonVerificarSurcusal1.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
-        botonVerificarSurcusal1.setText("Verificar existencia de la estacion");
-        botonVerificarSurcusal1.addActionListener(new java.awt.event.ActionListener() {
+        botonAgregarSurcusal1.setBackground(new java.awt.Color(204, 255, 255));
+        botonAgregarSurcusal1.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
+        botonAgregarSurcusal1.setText("Agregar sucursal");
+        botonAgregarSurcusal1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                botonVerificarSurcusal1ActionPerformed(evt);
+                botonAgregarSurcusal1ActionPerformed(evt);
             }
         });
-        getContentPane().add(botonVerificarSurcusal1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 100, 290, 50));
+        getContentPane().add(botonAgregarSurcusal1, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 100, 290, 50));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void dfsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dfsActionPerformed
-         String nombreSucursal = verificarsurcusal.getText();
-        if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
-            Estacion estacionSucursal = buscarEstacionPorNombre(nombreSucursal.trim());
-            if (estacionSucursal != null) {
-                Lista<Integer> cobertura = calcularCobertura(estacionSucursal, t, "DFS");
-                grafo.resaltarEstaciones(cobertura, estaciones);
-            } else {
-                JOptionPane.showMessageDialog(this, "Estación no encontrada. Por favor, verifique el nombre.");
-            }
-        }
+        tipoBusqueda = "DFS";
+        JOptionPane.showMessageDialog(this, "El tipo de búsqueda se ha establecido en DFS.");
     }//GEN-LAST:event_dfsActionPerformed
 
     private void bfsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bfsActionPerformed
-        String nombreSucursal = verificarsurcusal.getText();
-        if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
-            Estacion estacionSucursal = buscarEstacionPorNombre(nombreSucursal.trim());
-            if (estacionSucursal != null) {
-                Lista<Integer> cobertura = calcularCobertura(estacionSucursal, t, "BFS");
-                grafo.resaltarEstaciones(cobertura, estaciones);
-            } else {
-                JOptionPane.showMessageDialog(this, "Estación no encontrada. Por favor, verifique el nombre.");
-            }
-        }
+        tipoBusqueda = "BFS";
+        JOptionPane.showMessageDialog(this, "El tipo de búsqueda se ha establecido en BFS.");
     }//GEN-LAST:event_bfsActionPerformed
 
     private void botonEstablecerTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEstablecerTActionPerformed
@@ -360,7 +381,7 @@ public class InterfazFinal extends javax.swing.JFrame {
     }//GEN-LAST:event_botonCargarJsonActionPerformed
 
     private void botonEliminarSucursalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarSucursalActionPerformed
-       String nombreSucursal = verificarsurcusal.getText();
+       String nombreSucursal = agregarSurcusal.getText();
         quitarSucursal(nombreSucursal); // Llama a la función para quitar la sucursal
     }//GEN-LAST:event_botonEliminarSucursalActionPerformed
 
@@ -372,60 +393,54 @@ public class InterfazFinal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BotonVerificarCoberturaActionPerformed
 
-    private void botonVerificarSurcusal1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonVerificarSurcusal1ActionPerformed
-        String nombreSucursal = verificarsurcusal.getText();
-        if (nombreSucursal != null && !nombreSucursal.trim().isEmpty()) {
-            Estacion estacionSucursal = buscarEstacionPorNombre(nombreSucursal.trim());
-            if (estacionSucursal != null) {
-                JOptionPane.showMessageDialog(this, "Estación encontrada.");
+    private void botonAgregarSurcusal1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAgregarSurcusal1ActionPerformed
+       String nombreEstacion = agregarSurcusal.getText().trim();
+    if (nombreEstacion != null && !nombreEstacion.isEmpty()) {
+        Estacion estacionSucursal = buscarEstacionPorNombre(nombreEstacion);
+        if (estacionSucursal != null) {
+            if (!estacionSucursal.esSucursal()) {
+                // Crear una nueva sucursal
+                String nombreSucursal = "Sucursal_" + sucursales.len();
+                Sucursal nuevaSucursal = new Sucursal(nombreSucursal, t);
+                nuevaSucursal.agregarEstacion(estacionSucursal);
+                sucursales.append(nuevaSucursal);
+
+                // Marcar la estación como sucursal
+                estacionSucursal.setEsSucursal(true);
+
+                // Calcular la cobertura utilizando el tipo de búsqueda seleccionado
+                Lista<Integer> cobertura = calcularCobertura(estacionSucursal, t, tipoBusqueda);
+                coberturasSucursales.append(cobertura);
+
+                // Actualizar la visualización del grafo
+                grafo.resaltarEstaciones(coberturasSucursales, estaciones);
+
+                // Mostrar mensaje de éxito
+                JOptionPane.showMessageDialog(this, "Sucursal '" + nombreSucursal + "' añadida exitosamente usando " + tipoBusqueda + ".");
             } else {
-                JOptionPane.showMessageDialog(this, "Estación no encontrada. Por favor, verifique el nombre.");
+                JOptionPane.showMessageDialog(this, "La estación seleccionada ya es una sucursal.");
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Estación no encontrada. Por favor, verifique el nombre.");
         }
-    }//GEN-LAST:event_botonVerificarSurcusal1ActionPerformed
+    } else {
+        JOptionPane.showMessageDialog(this, "Ingrese el nombre de una estación válida.");
+    }
+    }//GEN-LAST:event_botonAgregarSurcusal1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InterfazFinal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InterfazFinal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InterfazFinal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InterfazFinal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new InterfazFinal().setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BotonVerificarCobertura;
+    private javax.swing.JTextField agregarSurcusal;
     private javax.swing.JButton bfs;
+    private javax.swing.JButton botonAgregarSurcusal1;
     private javax.swing.JButton botonCargarJson;
     private javax.swing.JButton botonEliminarSucursal;
     private javax.swing.JButton botonEstablecerT;
-    private javax.swing.JButton botonVerificarSurcusal1;
     private javax.swing.JButton dfs;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -434,6 +449,5 @@ public class InterfazFinal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField obtenerT;
-    private javax.swing.JTextField verificarsurcusal;
     // End of variables declaration//GEN-END:variables
 }
