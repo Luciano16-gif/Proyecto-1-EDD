@@ -14,6 +14,7 @@ public class Estacion {
     private Lista<String> lineas;
     private String sistema;
     private String color;
+    private boolean esSucursal;
 
     // Lista estática para almacenar pares de línea y color
     private static Lista<LineaColor> lineaColorLista = new Lista<>();
@@ -31,6 +32,7 @@ public class Estacion {
         this.lineas.append(linea);
         this.sistema = sistema;
         this.color = asignarColor(linea);
+        this.esSucursal = false; 
     }
 
     public void agregarLinea(String linea) {
@@ -39,6 +41,14 @@ public class Estacion {
         }
     }
 
+    public boolean esSucursal() {
+        return esSucursal;
+    }
+    
+    public void setEsSucursal(boolean esSucursal) {
+        this.esSucursal = esSucursal;
+    }
+    
     public String getNombre() {
         return nombre;
     }

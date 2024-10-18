@@ -225,24 +225,17 @@ public class Lista<T> {
     }    
 //funcion de la clase Lista para conocer existencia de un nodo
 
-    public boolean exist(T data){
-        if(head.getData() == data){
-            return true;
-        }
-        else if(tail.getData() == data){
-            return true;
-        }
-        else{
-            Nodo pointer = head;
-            for(int x = 0; x < len(); x++){
-                if(pointer.getData() == data){
-                    return true;
-                }
-                pointer = pointer.getNext();
+     public boolean exist(T data) {
+        Nodo<T> current = head;
+        while (current != null) { // Verifica si current no es null
+            if (current.getData().equals(data)) {
+                return true;
             }
+            current = current.getNext();
         }
         return false;
     }
+
     
     public int indexOf(T data) {
         Nodo<T> pointer = head;
