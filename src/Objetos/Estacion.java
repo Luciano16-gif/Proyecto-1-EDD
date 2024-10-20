@@ -5,8 +5,7 @@ import primitivas.Lista;
 /**
  * Esta clase define la clase Estacion
  * 
- * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
-
+ * @author:
  * @version: 16/10/2024
  */
 public class Estacion {
@@ -27,7 +26,7 @@ public class Estacion {
     };
 
     public Estacion(String nombre, String linea, String sistema) {
-        this.nombre = nombre;
+        this.nombre = nombre.trim();
         this.lineas = new Lista<>();
         this.lineas.append(linea);
         this.sistema = sistema;
@@ -107,22 +106,18 @@ public class Estacion {
         return sb.toString();
     }
 
+    // Modificaciones en equals y hashCode
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Estacion)) return false;
         Estacion estacion = (Estacion) obj;
-        return this.nombre.equals(estacion.nombre) &&
-               this.sistema.equals(estacion.sistema);
+        return this.nombre.equalsIgnoreCase(estacion.nombre);
     }
 
     @Override
     public int hashCode() {
-        // Implementación manual de hashCode
-        int hash = 7;
-        hash = 31 * hash + (nombre != null ? nombre.hashCode() : 0);
-        hash = 31 * hash + (sistema != null ? sistema.hashCode() : 0);
-        return hash;
+        return nombre.toLowerCase().hashCode();
     }
 
     // Clase interna para almacenar pares línea-color
