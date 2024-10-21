@@ -11,7 +11,7 @@ import primitivas.Lista;
 
 /**
  * Esta clase es la interfaz
- * 
+ *
  * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
  * @version: 16/10/2024
  */

@@ -16,7 +16,6 @@ public class InterfazFunciones {
         this.coberturasSucursales = new Lista<>(); // Inicializar la lista de coberturas
     }
 
-    
     public void inicializarGrafoYEstaciones() {
     grafo = new Grafos();
         estaciones = new Lista<>();
@@ -82,7 +81,7 @@ public class InterfazFunciones {
             estaciones.get(i).setEsSucursal(false); // Marcar como no cubierta
         }
     }
-}
+    }
 
 
     public void eliminarSucursal(String nombreEstacion) {
