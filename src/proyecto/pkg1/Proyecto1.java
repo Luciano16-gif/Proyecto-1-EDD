@@ -1,5 +1,6 @@
 
 package proyecto.pkg1;
+import InterfazGUI.InterfazFinal;
 
 /**
 
