@@ -15,10 +15,23 @@ import primitivas.Lista;
  */
 public class Funcion {
 
+    /**
+     *Este metodo lee un archivo JSON y lo procesa para cargar la red de transporte en el grafo
+     * 
+     * @param grafo El grafo donde se cargara la red de transporte
+     * @param estaciones la lista de estaciones donde se cargaran las estaciones
+     */
     public static void ReadJsonMetro(Grafos grafo, Lista<Estacion> estaciones) {
         readJson(grafo, estaciones);
     }
 
+    /**
+     * Este método lee un archivo JSON y lo procesa para cargar la red de transporte en el grafo.
+     * 
+     * @param grafo El grafo donde se cargará la red de transporte.
+     * @param estaciones La lista de estaciones donde se cargarán las estaciones.
+     * @return La lista de estaciones con la red de transporte cargada.
+     */
     public static Lista<Estacion> readJson(Grafos grafo, Lista<Estacion> estaciones) {
         try {
             // Abrir un JFileChooser para seleccionar el archivo JSON
@@ -55,6 +68,12 @@ public class Funcion {
         return estaciones;
     }
 
+    /**
+     * Este método procesa un JSON en una cadena y carga la red de transporte en el grafo.
+     * @param jsonString La cadena que contiene el JSON.
+     * @param estaciones La lista de estaciones donde se cargarán las estaciones.
+     * @param grafo El grafo donde se cargará la red de transporte.
+     */
     private static void parseJsonString(String jsonString, Lista<Estacion> estaciones, Grafos grafo) {
         // El formato del JSON es conocido, podemos parsearlo manualmente
 
@@ -201,6 +220,12 @@ public class Funcion {
         }
     }
     
+    /**
+     * Este método agrega una nueva línea a la red de transporte.
+     * 
+     * @param grafo El grafo donde se cargará la red de transporte.
+     * @param estaciones La lista de estaciones donde se cargarán las estaciones.
+     */
     public static void agregarNuevaLinea(Grafos grafo, Lista<Estacion> estaciones) {
         try {
             // Abrir un JFileChooser para seleccionar el archivo JSON de la nueva línea
@@ -235,7 +260,13 @@ public class Funcion {
         }
     }
 
-
+    /**
+     * Este método procesa un JSON en una cadena y carga una nueva línea en la red de transporte en el grafo.
+     * 
+     * @param jsonString La cadena que contiene el JSON.
+     * @param estaciones La lista de estaciones donde se cargarán las estaciones.
+     * @param grafo El grafo donde se cargará la red de transporte.
+     */
     private static void parseJsonNuevaLinea(String jsonString, Lista<Estacion> estaciones, Grafos grafo) {
         // Obtener el contenido del JSON
         int sistemaStart = jsonString.indexOf("{");
@@ -346,6 +377,14 @@ public class Funcion {
         }
     }
 
+    /**
+    * Este método divide una cadena en subcadenas basadas en un delimitador.
+    * Las subcadenas pueden estar entre llaves {}.
+    *
+    * @param input La cadena que se va a dividir.
+    * @param delimiter El delimitador que se usará para dividir la cadena.
+    * @return Un arreglo de subcadenas resultantes de la división.
+    */
     private static String[] DividirCadenaTexto(String input, String delimiter) {
         Lista<String> result = new Lista<>();
         StringBuilder sb = new StringBuilder();
