@@ -9,12 +9,16 @@ import javax.swing.JOptionPane;
 import primitivas.Lista;
 
 
+
 /**
- * Esta clase es la interfaz
+ * La clase {@code InterfazFinal} representa la interfaz gráfica de usuario (GUI) para interactuar con el sistema de estaciones y sucursales.
+ * Proporciona funcionalidades para cargar datos, agregar y eliminar sucursales, establecer parámetros de búsqueda y verificar coberturas.
  *
- * @author: Ricardo Paez - Luciano Minardo - Gabriele Colarusso
- * @version: 16/10/2024
+ * @author Ricardo Paez - Luciano Minardo - Gabriele Colarusso
+ * @version 16/10/2024
  */
+
+
 public class InterfazFinal extends javax.swing.JFrame {
     private Grafos grafo;
     private Lista<Estacion> estaciones;
@@ -23,6 +27,11 @@ public class InterfazFinal extends javax.swing.JFrame {
     private int t = 0; // Valor inicial de t
     private String tipoBusqueda = "";
 
+    
+    /**
+     * Constructor de la clase {@code InterfazFinal}.
+     * Inicializa los componentes gráficos y las estructuras de datos necesarias.
+     */    
     public InterfazFinal() {
         initComponents();
         grafo = new Grafos();
@@ -196,16 +205,34 @@ public class InterfazFinal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Acción realizada al pulsar el botón DFS.
+     * Establece el tipo de búsqueda en "DFS" y muestra un mensaje al usuario.
+     *
+     * @param evt Evento de acción generado por el botón.
+     */
     private void dfsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dfsActionPerformed
         tipoBusqueda = "DFS";
         JOptionPane.showMessageDialog(this, "El tipo de búsqueda se ha establecido en DFS.");
     }//GEN-LAST:event_dfsActionPerformed
 
+     /**
+     * Acción realizada al pulsar el botón BFS.
+     * Establece el tipo de búsqueda en "BFS" y muestra un mensaje al usuario.
+     *
+     * @param evt Evento de acción generado por el botón.
+     */
     private void bfsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bfsActionPerformed
         tipoBusqueda = "BFS";
         JOptionPane.showMessageDialog(this, "El tipo de búsqueda se ha establecido en BFS.");
     }//GEN-LAST:event_bfsActionPerformed
-
+    
+    /**
+     * Acción realizada al pulsar el botón "Establecer T".
+     * Establece el valor de 't' basado en la entrada del usuario y valida que sea un entero positivo.
+     *
+     * @param evt Evento de acción generado por el botón.
+     */
     private void botonEstablecerTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEstablecerTActionPerformed
         String input = obtenerT.getText();
         try {
@@ -220,16 +247,34 @@ public class InterfazFinal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Entrada inválida. Por favor, ingrese un número entero.");
         }
     }//GEN-LAST:event_botonEstablecerTActionPerformed
-
+    
+    /**
+     * Acción realizada al pulsar el botón "Cargar JSON".
+     * Inicializa el grafo y las estaciones leyendo los datos desde un archivo JSON.
+     *
+     * @param evt Evento de acción generado por el botón.
+     */
     private void botonCargarJsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCargarJsonActionPerformed
         interfazFunciones.inicializarGrafoYEstaciones();
     }//GEN-LAST:event_botonCargarJsonActionPerformed
 
+    /**
+     * Acción realizada al pulsar el botón "Eliminar Sucursal".
+     * Elimina una sucursal basada en el nombre de la estación ingresada por el usuario.
+     *
+     * @param evt Evento de acción generado por el botón.
+     */
     private void botonEliminarSucursalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminarSucursalActionPerformed
        String nombreSucursal = agregarSurcusal.getText().trim();
         interfazFunciones.eliminarSucursal(nombreSucursal);
     }//GEN-LAST:event_botonEliminarSucursalActionPerformed
 
+    /**
+     * Acción realizada al pulsar el botón "Verificar Cobertura Completa".
+     * Verifica si todas las estaciones están cubiertas por alguna sucursal y muestra un mensaje al usuario.
+     *
+     * @param evt Evento de acción generado por el botón.
+     */
     private void BotonVerificarCoberturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonVerificarCoberturaActionPerformed
         if (interfazFunciones.todasEstacionesCubiertas()) {
             JOptionPane.showMessageDialog(this, "Todas las estaciones están cubiertas por una sucursal.");
@@ -237,12 +282,24 @@ public class InterfazFinal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No todas las estaciones están cubiertas.");
         } 
     }//GEN-LAST:event_BotonVerificarCoberturaActionPerformed
-
+    
+    /**
+     * Acción realizada al pulsar el botón "Agregar Sucursal".
+     * Agrega una nueva sucursal en la estación especificada por el usuario.
+     *
+     * @param evt Evento de acción generado por el botón.
+     */
     private void botonAgregarSurcusal1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAgregarSurcusal1ActionPerformed
     String nombreEstacion = agregarSurcusal.getText().trim();
         interfazFunciones.agregarSucursal(nombreEstacion, t, tipoBusqueda);
     }//GEN-LAST:event_botonAgregarSurcusal1ActionPerformed
-
+    
+    /**
+     * Acción realizada al pulsar el botón "Sugerir Sucursal".
+     * Sugiere una estación para convertirla en sucursal basándose en la cobertura máxima de estaciones no cubiertas.
+     *
+     * @param evt Evento de acción generado por el botón.
+     */
     private void sugerirSurcusalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sugerirSurcusalActionPerformed
         if (interfazFunciones.todasEstacionesCubiertas()) {
         JOptionPane.showMessageDialog(this, 
@@ -254,6 +311,12 @@ public class InterfazFinal extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_sugerirSurcusalActionPerformed
 
+    /**
+     * Acción realizada al pulsar el botón "Agregar Línea Nueva".
+     * Agrega una nueva línea al grafo existente y actualiza la visualización.
+     *
+     * @param evt Evento de acción generado por el botón.
+     */
     private void agregarLineaNuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_agregarLineaNuevaActionPerformed
     interfazFunciones.agregarNuevaLinea();
     }//GEN-LAST:event_agregarLineaNuevaActionPerformed
