@@ -2,6 +2,7 @@ package Objetos;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.view.Viewer;
 import primitivas.Lista;
 
 /**
@@ -85,9 +86,9 @@ public class Grafos {
                 graph.getEdge(arcoId).setAttribute("ui.style", "fill-color: gray;");
             }
         }
-
         posicionarEstaciones(graph);
-        graph.display();
+        Viewer viewer = graph.display();
+        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER); 
     }
 
     private void posicionarEstaciones(Graph graph) {
