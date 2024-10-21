@@ -2,6 +2,7 @@ package Objetos;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.view.Viewer;
 import primitivas.Lista;
 
 /**
@@ -16,17 +17,33 @@ public class Grafos {
     private Lista<Estacion> estaciones;
     private Graph graph;
 
+    /**
+     *Constructor de la clase Grafos
+     */
     public Grafos() {
         arcos = new Lista<>();
         estaciones = new Lista<>();
     }
 
+    /**
+     *Añade un arco al grafo entre dos estaciones
+     * 
+     * @param src Indice de la estacion de origen
+     * @param dest Indice de la estacion de destino
+     */
     public void addArco(int src, int dest) {
         if (!existeArco(src, dest) && !existeArco(dest, src)) {
             arcos.append(new Arco(src, dest, 1));
         }
     }
 
+    /**
+     * Verifica si existe un arco entre dos estaciones
+     * 
+     * @param src Índice de la estación de origen
+     * @param dest Índice de la estación de destino
+     * @return true si existe un arco entre las estaciones, false en caso contrario
+     */
     private boolean existeArco(int src, int dest) {
         for (int i = 0; i < arcos.len(); i++) {
             Arco arco = arcos.get(i);
@@ -37,10 +54,20 @@ public class Grafos {
         return false;
     }
 
+    /**
+     * Añade una estación al grafo
+     * 
+     * @param estacion Objeto Estacion que se va a añadir al grafo
+     */
     public void addEstacion(Estacion estacion) {
         estaciones.append(estacion);
     }
 
+    /**
+     * Muestra el grafo de estaciones y arcos en una ventana de visualización.
+     * 
+     * @param estaciones Lista de estaciones que se van a mostrar en el grafo.
+     */
     public void mostrarGrafo(Lista<Estacion> estaciones) {
         this.estaciones = estaciones;
         System.setProperty("org.graphstream.ui", "swing");
@@ -85,15 +112,17 @@ public class Grafos {
                 graph.getEdge(arcoId).setAttribute("ui.style", "fill-color: gray;");
             }
         }
-
-        posicionarEstaciones(graph);
-        graph.display();
+        Viewer viewer = graph.display();
+        viewer.setCloseFramePolicy(Viewer.CloseFramePolicy.CLOSE_VIEWER); 
     }
 
-    private void posicionarEstaciones(Graph graph) {
-        
-    }
 
+    /**
+     * Obtiene una lista de índices de estaciones adyacentes a una estación específica.
+     * 
+     * @param nodo Índice de la estación para la cual se obtendrán las estaciones adyacentes.
+     * @return Lista de índices de estaciones adyacentes.
+     */
     public Lista<Integer> getAdyacentes(int nodo) {
         Lista<Integer> adyacentes = new Lista<>();
         for (int i = 0; i < arcos.len(); i++) {
@@ -107,6 +136,12 @@ public class Grafos {
         return adyacentes;
     }
 
+    /**
+     * Resalta en el grafo las estaciones que son sucursales y las que están cubiertas por al menos una sucursal.
+     * 
+     * @param coberturasSucursales Lista de listas de índices de estaciones que están cubiertas por cada sucursal.
+     * @param estaciones Lista de estaciones que se van a resaltar en el grafo.
+     */
     public void resaltarEstaciones(Lista<Lista<Integer>> coberturasSucursales, Lista<Estacion> estaciones) {
         // Crear un arreglo para rastrear las estaciones cubiertas y sucursales
         boolean[] estacionesCubiertas = new boolean[estaciones.len()];
