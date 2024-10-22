@@ -2,6 +2,7 @@
 package proyecto.pkg1;
 import InterfazGUI.InterfazFinal;
 
+
 /**
 
  * Esta clase que inicializa el proyecto mediante el main

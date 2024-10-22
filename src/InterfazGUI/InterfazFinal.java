@@ -5,7 +5,11 @@ import Objetos.Funcion;
 import Objetos.Grafos;
 import Objetos.InterfazFunciones;
 import Objetos.Sucursal;
+import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import primitivas.Lista;
 
 
@@ -16,6 +20,7 @@ import primitivas.Lista;
  * @version: 16/10/2024
  */
 public class InterfazFinal extends javax.swing.JFrame {
+    FondoPanel fondo = new FondoPanel();
     private Grafos grafo;
     private Lista<Estacion> estaciones;
     private Lista<Sucursal> sucursales;
@@ -24,12 +29,14 @@ public class InterfazFinal extends javax.swing.JFrame {
     private String tipoBusqueda = "";
 
     public InterfazFinal() {
+        this.setContentPane(fondo);
         initComponents();
         grafo = new Grafos();
         estaciones = new Lista<>();
         sucursales = new Lista<>();
         interfazFunciones = new InterfazFunciones(grafo, estaciones, sucursales);
     }
+   
     
 
     /**
@@ -71,7 +78,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        botonCargarJson.setBackground(new java.awt.Color(204, 255, 255));
+        botonCargarJson.setBackground(new java.awt.Color(204, 204, 255));
         botonCargarJson.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         botonCargarJson.setText("Cargar JSON");
         botonCargarJson.addActionListener(new java.awt.event.ActionListener() {
@@ -81,7 +88,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         });
         getContentPane().add(botonCargarJson, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 20, 200, 60));
 
-        botonEstablecerT.setBackground(new java.awt.Color(204, 255, 255));
+        botonEstablecerT.setBackground(new java.awt.Color(204, 204, 255));
         botonEstablecerT.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         botonEstablecerT.setText("Establecer T");
         botonEstablecerT.addActionListener(new java.awt.event.ActionListener() {
@@ -92,7 +99,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         getContentPane().add(botonEstablecerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 430, 170, 50));
         getContentPane().add(obtenerT, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 390, 170, -1));
 
-        dfs.setBackground(new java.awt.Color(204, 255, 255));
+        dfs.setBackground(new java.awt.Color(204, 204, 255));
         dfs.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         dfs.setText("DFS");
         dfs.addActionListener(new java.awt.event.ActionListener() {
@@ -102,7 +109,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         });
         getContentPane().add(dfs, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 280, 100, 50));
 
-        bfs.setBackground(new java.awt.Color(204, 255, 255));
+        bfs.setBackground(new java.awt.Color(204, 204, 255));
         bfs.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         bfs.setText("BFS");
         bfs.addActionListener(new java.awt.event.ActionListener() {
@@ -116,7 +123,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         jLabel1.setText("Seleccione el algoritmo deseado para colocar ");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 230, 310, 20));
 
-        botonEliminarSucursal.setBackground(new java.awt.Color(204, 255, 255));
+        botonEliminarSucursal.setBackground(new java.awt.Color(204, 204, 255));
         botonEliminarSucursal.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         botonEliminarSucursal.setText("Eliminar Sucursal");
         botonEliminarSucursal.addActionListener(new java.awt.event.ActionListener() {
@@ -143,7 +150,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         jLabel5.setText("y ver la cobertura de la sucursal.");
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 250, -1, -1));
 
-        BotonVerificarCobertura.setBackground(new java.awt.Color(204, 255, 255));
+        BotonVerificarCobertura.setBackground(new java.awt.Color(204, 204, 255));
         BotonVerificarCobertura.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         BotonVerificarCobertura.setText("Verificar Cobertura Completa");
         BotonVerificarCobertura.addActionListener(new java.awt.event.ActionListener() {
@@ -153,7 +160,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         });
         getContentPane().add(BotonVerificarCobertura, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, 260, 50));
 
-        botonAgregarSurcusal1.setBackground(new java.awt.Color(204, 255, 255));
+        botonAgregarSurcusal1.setBackground(new java.awt.Color(204, 204, 255));
         botonAgregarSurcusal1.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         botonAgregarSurcusal1.setText("Agregar sucursal");
         botonAgregarSurcusal1.addActionListener(new java.awt.event.ActionListener() {
@@ -163,7 +170,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         });
         getContentPane().add(botonAgregarSurcusal1, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 100, 290, 50));
 
-        sugerirSurcusal.setBackground(new java.awt.Color(204, 255, 255));
+        sugerirSurcusal.setBackground(new java.awt.Color(204, 204, 255));
         sugerirSurcusal.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         sugerirSurcusal.setText("Sugerir Sucursal");
         sugerirSurcusal.addActionListener(new java.awt.event.ActionListener() {
@@ -173,7 +180,7 @@ public class InterfazFinal extends javax.swing.JFrame {
         });
         getContentPane().add(sugerirSurcusal, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 260, 180, 50));
 
-        agregarLineaNueva.setBackground(new java.awt.Color(204, 255, 255));
+        agregarLineaNueva.setBackground(new java.awt.Color(204, 204, 255));
         agregarLineaNueva.setFont(new java.awt.Font("Impact", 0, 18)); // NOI18N
         agregarLineaNueva.setText("Agregar Linea Nueva");
         agregarLineaNueva.addActionListener(new java.awt.event.ActionListener() {
@@ -287,4 +294,24 @@ public class InterfazFinal extends javax.swing.JFrame {
     private javax.swing.JTextField obtenerT;
     private javax.swing.JButton sugerirSurcusal;
     // End of variables declaration//GEN-END:variables
+
+    class FondoPanel extends JPanel
+    {
+        private Image imagen;
+        
+        @Override
+        public void paint(Graphics g)
+        {
+            imagen = new ImageIcon(getClass().getResource("/Imagenes/ImagenFondoInterfaz.jpg")).getImage();
+            
+            g.drawImage(imagen, 0, 0, getWidth(), getHeight(), this);
+            
+            setOpaque(false);
+            
+            super.paint(g);
+        }
+    }
+    
+            
+
 }
