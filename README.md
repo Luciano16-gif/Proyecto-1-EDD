@@ -6,3 +6,5 @@ En issues se encuentra el diagrama de clases en formato PDF y PNG además de est
 Si tiene problemas para descargar las librerías desde la pestaña de issues, las puede descargar mediante el siguiente link: https://graphstream-project.org/download/  
 
 Instrucciones del Proyecto Sucursales: https://docs.google.com/document/d/1ONDnO1jUwVRjE1M3b3-Wis5dCU6LokCjEfw1rmZ19Ag/edit
+
+Video de como utilizar la interfaz por si ocurre algun problema: https://youtu.be/yqxtD5PdoFM
