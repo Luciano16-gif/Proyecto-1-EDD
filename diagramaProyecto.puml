@@ -1,0 +1,5 @@
+@startuml
+class InterfazGUI.InterfazFinal
+class proyecto.pkg1.Proyecto1
+proyecto.pkg1.Proyecto1 ..> InterfazGUI.InterfazFinal
+@enduml
