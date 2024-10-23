@@ -18,6 +18,7 @@ public class Proyecto1 {
     public static void main(String[] args) {
         // Crear la ventana de la interfaz donde se va a visualizar la interfaz
         InterfazFinal window = new InterfazFinal();
+        window.setResizable(false);
         window.setVisible(true);   
     }
 }
